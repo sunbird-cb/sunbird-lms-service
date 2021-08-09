@@ -42,6 +42,7 @@ import org.sunbird.services.sso.SSOManager;
 import org.sunbird.services.sso.SSOServiceFactory;
 import org.sunbird.telemetry.util.TelemetryUtil;
 import org.sunbird.user.service.impl.UserLookUpServiceImpl;
+import org.sunbird.user.service.impl.UserProfileService;
 import org.sunbird.user.service.impl.UserServiceImpl;
 import org.sunbird.user.util.MigrationUtils;
 import org.sunbird.user.util.UserActorOperations;
@@ -77,6 +78,8 @@ public class TenantMigrationActor extends BaseActor {
           "");
   private DataMaskingService maskingService =
       org.sunbird.common.models.util.datasecurity.impl.ServiceFactory.getMaskingServiceInstance("");
+  private UserProfileService userProfileService = new UserProfileService();
+
 
   @Override
   public void onReceive(Request request) throws Throwable {
@@ -227,6 +230,25 @@ public class TenantMigrationActor extends BaseActor {
     }
     userOrgErrMsgList.addAll(userExtIdErrMsgList);
     response.getResult().put(JsonKey.ERRORS, userOrgErrMsgList);
+
+    //Added code for updating user department for profile details
+    Map<String, Object> orgDao = new HashMap<>();
+    Util.DbInfo orgDbInfo = Util.dbInfoMap.get(JsonKey.ORG_DB);
+    Response orgResult =
+            cassandraOperation.getRecordById(
+                    orgDbInfo.getKeySpace(),
+                    orgDbInfo.getTableName(),
+                    orgId,
+                    request.getRequestContext());
+    List<Map<String, Object>> list = (List<Map<String, Object>>) orgResult.get(JsonKey.RESPONSE);
+    if (!(list.isEmpty())) {
+      orgDao = list.get(0);
+    }
+    String userDepatment = orgDao.get(JsonKey.ORG_NAME).toString();
+    Map<String, Object> profileFields = new HashMap<>();
+    profileFields.put(JsonKey.DEPARTMENT_NAME, userDepatment);
+    userProfileService.updateProfile(request.getRequest().get(JsonKey.USER_ID).toString(),profileFields);
+
     // send the response
     sender().tell(response, self());
     // save user data to ES
