@@ -183,6 +183,7 @@ public final class JsonKey {
   public static final String ORG_IMAGE_URL = "orgImageUrl";
   public static final String ORG_JOIN_DATE = "orgJoinDate";
   public static final String ORG_NAME = "orgName";
+  public static final String DEPARTMENT_NAME = "departmentName";
   public static final String ORG_TYPE = "organisationType";
   public static final String ORGANISATION = "organisation";
   public static final String ORGANISATION_ID = "organisationId";

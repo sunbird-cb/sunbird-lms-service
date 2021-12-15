@@ -14,5 +14,13 @@ public interface IUserProfileService {
      */
     public void validateProfile(Request userRequest);
 
+    /**
+     *
+     * @param uuid
+     * @param fields
+     */
+    public void updateProfile(String uuid, Map<String, Object> fields);
+
+
 
 }
