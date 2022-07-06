@@ -38,6 +38,8 @@ public class Organisation implements Serializable {
   private Boolean isTenant;
   private List<Map<String, String>> orgLocation;
 
+  private Map<String,String> additionalProperties;
+
   public String getId() {
     return id;
   }
@@ -194,5 +196,13 @@ public class Organisation implements Serializable {
 
   public void setOrgLocation(List<Map<String, String>> orgLocation) {
     this.orgLocation = orgLocation;
+  }
+
+  public Map<String, String> getAdditionalProperties() {
+    return additionalProperties;
+  }
+
+  public void setAdditionalProperties(Map<String, String> additionalProperties) {
+    this.additionalProperties = additionalProperties;
   }
 }

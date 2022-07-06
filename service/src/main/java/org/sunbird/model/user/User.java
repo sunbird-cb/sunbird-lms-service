@@ -26,6 +26,7 @@ public class User implements Serializable {
 
   private String id;
   private String countryCode;
+  private String country;
   private String createdBy;
   private String createdDate;
   private String dob;
@@ -71,6 +72,14 @@ public class User implements Serializable {
 
   public Map<String, String> getAllTncAccepted() {
     return allTncAccepted;
+  }
+
+  public String getCountry() {
+    return country;
+  }
+
+  public void setCountry(String country) {
+    this.country = country;
   }
 
   public void setAllTncAccepted(Map<String, String> allTncAccepted) {
