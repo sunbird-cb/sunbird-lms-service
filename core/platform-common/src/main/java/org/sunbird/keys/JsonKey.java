@@ -54,6 +54,7 @@ public final class JsonKey {
   public static final String CONTEXT = "context";
   public static final String CORRELATED_OBJECTS = "correlatedObjects";
   public static final String COUNT = "count";
+  public static final String COUNTRY="country";
   public static final String COUNTRY_CODE = "countryCode";
   public static final String COURSE_ID = "courseId";
   public static final String COURSE_NAME = "courseName";
