@@ -16,6 +16,8 @@ public enum ResponseCode {
   errorParamExists(
       ResponseMessage.Key.ERROR_PARAM_EXISTS, ResponseMessage.Message.ERROR_PARAM_EXISTS),
   errorInvalidOTP(ResponseMessage.Key.ERROR_INVALID_OTP, ResponseMessage.Message.ERROR_INVALID_OTP),
+  errorOTPExpired(ResponseMessage.Key.ERROR_OTP_EXPIRED, ResponseMessage.Message.ERROR_OTP_EXPIRED),
+  errorOTPAttemptExceeded(ResponseMessage.Key.ERROR_OTP_ATTEMPT_EXCEEDED, ResponseMessage.Message.ERROR_OTP_ATTEMPT_EXCEEDED),
   dataTypeError(ResponseMessage.Key.DATA_TYPE_ERROR, ResponseMessage.Message.DATA_TYPE_ERROR),
   errorAttributeConflict(
       ResponseMessage.Key.ERROR_ATTRIBUTE_CONFLICT,

@@ -156,7 +156,7 @@ public class KeyCloakServiceImpl implements SSOManager {
     } catch (Exception e) {
       logger.error(
           context,
-          "makeUserActiveOrInactive:error occurred while blocking or unblocking user: ",
+          "makeUserActiveOrInactive:error occurred while blocking or unblocking user: " + e.getMessage(),
           e);
       String exMsg =
           String.format(ResponseMessage.Message.INVALID_PARAMETER_VALUE, userId, JsonKey.USER_ID);

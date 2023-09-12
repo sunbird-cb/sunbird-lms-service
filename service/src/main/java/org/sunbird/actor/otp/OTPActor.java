@@ -127,7 +127,17 @@ public class OTPActor extends BaseActor {
               + OTPUtil.maskId(key, type)
               + " type = "
               + type);
-      ProjectCommonException.throwClientErrorException(ResponseCode.errorInvalidOTP);
+      ProjectCommonException.throwClientErrorException(ResponseCode.errorOTPExpired);
+    }
+    int remainingCount = getRemainingAttemptedCount(otpDetails);
+    if (remainingCount <= 0) {
+      logger.info(
+              request.getRequestContext(),
+              "OTP_VALIDATION_FAILED:OTPActor:verifyOTP: Attempts Exceeded For The OTP = "
+                      + OTPUtil.maskId(key, type)
+                      + " type = "
+                      + type);
+      ProjectCommonException.throwClientErrorException(ResponseCode.errorOTPAttemptExceeded);
     }
     String otpInDB = (String) otpDetails.get(JsonKey.OTP);
     if (StringUtils.isBlank(otpInDB) || StringUtils.isBlank(otpInRequest)) {
@@ -174,9 +184,7 @@ public class OTPActor extends BaseActor {
             + ",remaining attempt is "
             + remainingCount);
     int attemptedCount = (int) otpDetails.get(JsonKey.ATTEMPTED_COUNT);
-    if (remainingCount <= 0) {
-      otpService.deleteOtp(type, key, context);
-    } else {
+    if (remainingCount >= 0) {
       otpDetails.put(JsonKey.ATTEMPTED_COUNT, attemptedCount + 1);
       otpService.updateAttemptCount(otpDetails, context);
     }

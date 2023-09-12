@@ -110,6 +110,8 @@ public interface ResponseMessage {
     String SERVER_ERROR = "server error";
     String EXTENDED_USER_PROFILE_NOT_LOADED = "Failed to load extendedProfileSchemaConfig from System_Settings table";
     String ROLE_PROCESSING_INVALID_ORG = "Error while processing assign role. Invalid Organisation Id";
+    String ERROR_OTP_EXPIRED = "OTP Expired, Please Try Again.";
+    String ERROR_OTP_ATTEMPT_EXCEEDED = "Attempt Exceeded For the OTP, Please Try Again.";;
   }
 
   interface Key {
@@ -188,5 +190,8 @@ public interface ResponseMessage {
     String INVALID_CSV_FILE = "0074";
     String EXTENDED_USER_PROFILE_NOT_LOADED = "EXTENDED_USER_PROFILE_NOT_LOADED";
     String ROLE_PROCESSING_INVALID_ORG = "ROLE_PROCESSING_INVALID_ORG_ID";
+    String ERROR_OTP_EXPIRED = "0075";
+
+    String ERROR_OTP_ATTEMPT_EXCEEDED = "0076";
   }
 }
