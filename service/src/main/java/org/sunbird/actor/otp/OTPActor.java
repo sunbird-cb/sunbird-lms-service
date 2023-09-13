@@ -184,7 +184,7 @@ public class OTPActor extends BaseActor {
             + ",remaining attempt is "
             + remainingCount);
     int attemptedCount = (int) otpDetails.get(JsonKey.ATTEMPTED_COUNT);
-    if (remainingCount >= 0) {
+    if (remainingCount > 0) {
       otpDetails.put(JsonKey.ATTEMPTED_COUNT, attemptedCount + 1);
       otpService.updateAttemptCount(otpDetails, context);
     }

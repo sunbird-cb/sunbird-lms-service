@@ -110,8 +110,8 @@ public interface ResponseMessage {
     String SERVER_ERROR = "server error";
     String EXTENDED_USER_PROFILE_NOT_LOADED = "Failed to load extendedProfileSchemaConfig from System_Settings table";
     String ROLE_PROCESSING_INVALID_ORG = "Error while processing assign role. Invalid Organisation Id";
-    String ERROR_OTP_EXPIRED = "OTP Expired, Please Try Again.";
-    String ERROR_OTP_ATTEMPT_EXCEEDED = "Attempt Exceeded For the OTP, Please Try Again.";;
+    String ERROR_OTP_EXPIRED = "Time Limit for OTP Exceeded, Please Try Again.";
+    String ERROR_OTP_ATTEMPT_EXCEEDED = "Number of attempts exceeded for OTP verification. Please try again.";;
   }
 
   interface Key {
