@@ -24,6 +24,7 @@ public class SendgridConnection {
   private String fromEmail;
   private Session session;
   private Transport transport;
+  private String emailProtocol;
 
   public Transport createConnection(RequestContext context) {
     try {
@@ -32,6 +33,7 @@ public class SendgridConnection {
       userName = System.getenv(JsonKey.EMAIL_SERVER_USERNAME);
       password = System.getenv(JsonKey.EMAIL_SERVER_PASSWORD);
       fromEmail = System.getenv(JsonKey.EMAIL_SERVER_FROM);
+      emailProtocol = System.getenv(JsonKey.EMAIL_PROTOCOL);
       isTlsEnabled = PropertiesCache.getInstance().getProperty(JsonKey.IS_TLS_ENABLE);
 
       if (StringUtils.isBlank(host)
@@ -60,7 +62,7 @@ public class SendgridConnection {
       if ("true".equalsIgnoreCase(isTlsEnabled))
       {
         props.put("mail.smtp.starttls.enable", "true");
-        props.put("mail.smtp.ssl.protocols", "TLSv1.2");
+        props.put("mail.smtp.ssl.protocols", emailProtocol);
       }
       session = Session.getInstance(props, new GMailAuthenticator(userName, password));
       transport = session.getTransport("smtp");

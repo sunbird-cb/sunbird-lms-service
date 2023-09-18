@@ -635,6 +635,7 @@ public final class JsonKey {
   public static final String ORG_TYPE_BOARD = "board";
   public static final String FORCE_MIGRATION = "forceMigration";
   public static final String SOFT_DELETE_PREVIOUS_ORG = "softDeleteOldOrg";
+  public static final String EMAIL_PROTOCOL = "sunbird_mail_protocol";
 
   private JsonKey() {}
 }
