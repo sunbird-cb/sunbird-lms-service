@@ -81,6 +81,7 @@ public final class JsonKey {
   public static final String EMAIL_REQUEST = "emailReq";
   public static final String EMAIL_SERVER_FROM = "sunbird_mail_server_from_email";
   public static final String IS_TLS_ENABLE = "sunbird_mail_server_use_tls";
+  public static final String EMAIL_PROTOCOL = "sunbird_mail_protocol";
   public static final String EMAIL_SERVER_HOST = "sunbird_mail_server_host";
   public static final String EMAIL_SERVER_PASSWORD = "sunbird_mail_server_password";
   public static final String EMAIL_SERVER_PORT = "sunbird_mail_server_port";
@@ -635,7 +636,6 @@ public final class JsonKey {
   public static final String ORG_TYPE_BOARD = "board";
   public static final String FORCE_MIGRATION = "forceMigration";
   public static final String SOFT_DELETE_PREVIOUS_ORG = "softDeleteOldOrg";
-  public static final String EMAIL_PROTOCOL = "sunbird_mail_protocol";
 
   private JsonKey() {}
 }
