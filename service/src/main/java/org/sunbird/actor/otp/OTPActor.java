@@ -211,7 +211,7 @@ public class OTPActor extends BaseActor {
   private int getRemainingAttemptedCount(Map<String, Object> otpDetails) {
     int allowedAttempt = Integer.parseInt(ProjectUtil.getConfigValue(SUNBIRD_OTP_ALLOWED_ATTEMPT));
     int attemptedCount = (int) otpDetails.get(JsonKey.ATTEMPTED_COUNT);
-    return (allowedAttempt - (attemptedCount + 1));
+    return (allowedAttempt - attemptedCount);
   }
 
   private void sendOTP(Request request, String otp, String key, RequestContext context) {
