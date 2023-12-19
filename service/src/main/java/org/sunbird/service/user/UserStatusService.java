@@ -46,12 +46,12 @@ public class UserStatusService {
 
     ObjectMapper mapper = new ObjectMapper();
     User updatedUser = mapper.convertValue(userMapES, User.class);
-    SSOManager ssoManager = SSOServiceFactory.getInstance();
-    if (isBlocked) {
-      ssoManager.deactivateUser(userMapES, context);
-    } else {
-      ssoManager.activateUser(userMapES, context);
-    }
+//    SSOManager ssoManager = SSOServiceFactory.getInstance();
+//    if (isBlocked) {
+//      ssoManager.deactivateUser(userMapES, context);
+//    } else {
+//      ssoManager.activateUser(userMapES, context);
+//    }
     UserDao userDao = UserDaoImpl.getInstance();
     return userDao.updateUser(updatedUser, context);
   }
