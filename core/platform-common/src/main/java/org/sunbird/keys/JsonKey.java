@@ -645,6 +645,7 @@ public final class JsonKey {
   public static final String EDATA = "edata";
 
   public static final String SELF_REGISTRATION = "self_registration";
-  public static final String CREATEDBY = "createdby";
+  public static final String CREATEDBY = "createdBy";
+  public static final String USER_FIRST_LOGIN_KAFKA_TOPIC = "kafka_user_first_login_event_topic";
   private JsonKey() {}
 }
