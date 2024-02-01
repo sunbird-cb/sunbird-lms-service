@@ -101,7 +101,7 @@ public final class UserUtility {
           List<String> valueList = (List<String>) filterValue;
           List<String> encValueList = new ArrayList();
           for (String value: valueList) {
-            encValueList.add(service.encryptData((String) filterValue, null));
+            encValueList.add(service.encryptData(value, null));
           }
           filterMap.put(key, encValueList);
         } else {
