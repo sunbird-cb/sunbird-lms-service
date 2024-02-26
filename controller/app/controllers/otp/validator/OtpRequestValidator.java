@@ -102,4 +102,30 @@ public class OtpRequestValidator extends BaseRequestValidator {
                   JsonKey.RECOVERY_PHONE)));
     }
   }
+
+  public void validateGenerateOtpRequestV3(Request otpRequest) {
+    commonValidationV3(otpRequest, false);
+    // Validate template id need to be checked with Karthik
+    validateTemplateId(otpRequest);
+  }
+
+  private void commonValidationV3(Request otpRequest, boolean isOtpMandatory) {
+
+
+    validateParam(
+            (String) otpRequest.getRequest().get(JsonKey.CONTEXT_TYPE),
+            ResponseCode.mandatoryParamsMissing,JsonKey.KEY);
+
+    validateParam(
+            (String) otpRequest.getRequest().get(JsonKey.OTP),
+            ResponseCode.mandatoryParamsMissing,
+            JsonKey.KEY);
+
+    validateParam(
+            (String) otpRequest.getRequest().get(JsonKey.CONTEXT_ATTRIBUTES),
+            ResponseCode.mandatoryParamsMissing,
+            JsonKey.KEY);
+
+    validateTypeAndKey(otpRequest);
+  }
 }

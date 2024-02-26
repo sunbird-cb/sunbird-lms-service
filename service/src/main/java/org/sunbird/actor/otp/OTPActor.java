@@ -43,7 +43,10 @@ public class OTPActor extends BaseActor {
       generateOTP(request);
     } else if (ActorOperations.VERIFY_OTP.getValue().equals(request.getOperation())) {
       verifyOTP(request);
-    } else {
+    } else if (ActorOperations.GENERATE_OTP_V3.getValue().equals(request.getOperation())) {
+      generateOTPV3(request);
+    }
+    else {
       onReceiveUnsupportedOperation();
     }
   }
@@ -239,5 +242,9 @@ public class OTPActor extends BaseActor {
       default:
         return null;
     }
+  }
+
+  private void generateOTPV3(Request request) {
+    // Need to implement the code.
   }
 }
