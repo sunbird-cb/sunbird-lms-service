@@ -1,10 +1,15 @@
 package org.sunbird.actor.otp;
 
 import akka.actor.ActorRef;
+
 import java.text.MessageFormat;
+import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.sunbird.actor.core.BaseActor;
@@ -244,7 +249,71 @@ public class OTPActor extends BaseActor {
     }
   }
 
+
+  /*
+   * This method generates OTP for the provided request.
+   */
   private void generateOTPV3(Request request) {
-    // Need to implement the code.
+    logger.debug(request.getRequestContext(), "OTPActor:generateOTP method call start.");
+    // Extract necessary parameters from the request.
+    String type = (String) request.getRequest().get(JsonKey.TYPE);
+    String key = (String) request.getRequest().get(JsonKey.KEY);
+    String userId = (String) request.getRequest().get(JsonKey.USER_ID);
+    String contextType = (String) request.getRequest().get(JsonKey.CONTEXT_TYPE);
+    List<String> contextAttributesList = (new ObjectMapper()).convertValue(request.get(JsonKey.CONTEXT_ATTRIBUTES),
+            new TypeReference<>() {
+            });
+    String contextAttributes = String.join(",", contextAttributesList);
+    // If userId is not blank, retrieve email or phone associated with it and update key and type accordingly.
+    if (StringUtils.isNotBlank(userId)) {
+      key = otpService.getEmailPhoneByUserId(userId, type, request.getRequestContext());
+      type = getType(type);
+      // Log the operation.
+      logger.info(
+              request.getRequestContext(),
+              "OTPActor:generateOTP:getEmailPhoneByUserId: called for userId = "
+                      + userId
+                      + " ,key = "
+                      + OTPUtil.maskId(key, type));
+    }
+    // Throttle OTP generation based on rate limit.
+    rateLimitService.throttleByKey(
+            key,
+            type,
+            new RateLimiter[]{OtpRateLimiter.HOUR, OtpRateLimiter.DAY},
+            request.getRequestContext());
+    // Get OTP details based on type, key, contextType, and contextAttributes.
+    String otp;
+    Map<String, Object> details = otpService.getOTPDetailsV3(type, key, contextType, contextAttributes, request.getRequestContext());
+    // If no details found, generate a new OTP, log its generation, insert the OTP details, and log the insertion.
+    if (MapUtils.isEmpty(details)) {
+      otp = OTPUtil.generateOTP(request.getRequestContext());
+      logger.info(
+              request.getRequestContext(),
+              "OTPActor:generateOTP: new otp generated for Key = "
+                      + OTPUtil.maskId(key, type)
+                      + " & OTP = "
+                      + OTPUtil.maskOTP(otp));
+      otpService.insertOTPDetailsV3(type, key, otp, contextType, contextAttributes, request.getRequestContext());
+    } else {
+      // If details found, re-issue the OTP and log this action.
+      otp = (String) details.get(JsonKey.OTP);
+      logger.info(
+              request.getRequestContext(),
+              "OTPActor:generateOTP: Re-issuing otp for Key = "
+                      + OTPUtil.maskId(key, type)
+                      + " & OTP = "
+                      + OTPUtil.maskOTP(otp));
+    }
+    logger.info(
+            request.getRequestContext(),
+            "OTPActor:sendOTP : Calling SendOTPActor for Key = " + OTPUtil.maskId(key, type));
+    // Call the sendOTP method.
+    sendOTP(request, otp, key, request.getRequestContext());
+    // Create a response indicating success and send it.
+    Response response = new Response();
+    response.put(JsonKey.RESPONSE, JsonKey.SUCCESS);
+    sender().tell(response, self());
   }
+
 }
