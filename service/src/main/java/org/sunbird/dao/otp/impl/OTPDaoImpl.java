@@ -127,13 +127,11 @@ public class OTPDaoImpl implements OTPDao {
    *
    * @param type              The type of the OTP (e.g., email, phone).
    * @param key               The key associated with the OTP.
-   * @param contextType       The type of context associated with the OTP.
-   * @param contextAttributes The attributes of the context associated with the OTP.
    * @param context           The request context.
    * @return A map containing OTP details, or null if no details are found.
    */
   @Override
-  public Map<String, Object> getOTPDetailsV3(String type, String key, String contextType, String contextAttributes, RequestContext context) {
+  public Map<String, Object> getOTPDetailsV3(String type, String key, RequestContext context) {
     // Create a map to store the request parameters.
     Map<String, Object> request = new HashMap<>();
     request.put(JsonKey.TYPE, type);
@@ -161,4 +159,20 @@ public class OTPDaoImpl implements OTPDao {
     // Return the first OTP details found.
     return otpMapList.get(0);
   }
+
+  /**
+   * Overrides the method to update OTP (One-Time Password) details based on the provided parameters map.
+   * This method delegates the update operation to the Cassandra database operation.
+   *
+   * @param parametersMap A map containing parameters for updating OTP details.
+   *                      It may include information such as type, key, and context token.
+   * @param requestContext The request context associated with the update operation,
+   *                       providing contextual information for the update process.
+   */
+  @Override
+  public void updateOTPDetailsV3(Map<String, Object> parametersMap, RequestContext requestContext) {
+    // Delegate the update operation to the Cassandra database operation
+    cassandraOperation.upsertRecord(JsonKey.SUNBIRD, TABLE_NAME, parametersMap, requestContext);
+  }
+
 }

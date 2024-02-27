@@ -2,7 +2,9 @@ package org.sunbird.actor.otp;
 
 import akka.actor.ActorRef;
 
+import java.security.SecureRandom;
 import java.text.MessageFormat;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
@@ -36,6 +38,7 @@ public class OTPActor extends BaseActor {
   private final OTPService otpService = new OTPService();
   private final RateLimitService rateLimitService = new RateLimitServiceImpl();
   private static final String SUNBIRD_OTP_ALLOWED_ATTEMPT = "sunbird_otp_allowed_attempt";
+  private static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
   @Inject
   @Named("send_otp_actor")
@@ -50,6 +53,9 @@ public class OTPActor extends BaseActor {
       verifyOTP(request);
     } else if (ActorOperations.GENERATE_OTP_V3.getValue().equals(request.getOperation())) {
       generateOTPV3(request);
+    }
+    else if (ActorOperations.VERIFY_OTP_V3.getValue().equals(request.getOperation())) {
+      verifyOTPV3(request);
     }
     else {
       onReceiveUnsupportedOperation();
@@ -284,7 +290,7 @@ public class OTPActor extends BaseActor {
             request.getRequestContext());
     // Get OTP details based on type, key, contextType, and contextAttributes.
     String otp;
-    Map<String, Object> details = otpService.getOTPDetailsV3(type, key, contextType, contextAttributes, request.getRequestContext());
+    Map<String, Object> details = otpService.getOTPDetailsV3(type, key, request.getRequestContext());
     // If no details found, generate a new OTP, log its generation, insert the OTP details, and log the insertion.
     if (MapUtils.isEmpty(details)) {
       otp = OTPUtil.generateOTP(request.getRequestContext());
@@ -316,4 +322,117 @@ public class OTPActor extends BaseActor {
     sender().tell(response, self());
   }
 
+
+  /**
+   * Verifies the OTP (One-Time Password) provided in the request.
+   * If the OTP is valid, updates OTP details and sends a success response;
+   * otherwise, handles the mismatch or invalid OTP.
+   * @param request The request containing OTP-related information.
+   */
+  private void verifyOTPV3(Request request) {
+    // Extracting parameters from the request
+    String type = (String) request.getRequest().get(JsonKey.TYPE);
+    String key = (String) request.getRequest().get(JsonKey.KEY);
+    String otpInRequest = (String) request.getRequest().get(JsonKey.OTP);
+
+    String userId = (String) request.getRequest().get(JsonKey.USER_ID);
+    // If userId is present, get the key associated with the userId
+    if (StringUtils.isNotBlank(userId)) {
+      key = otpService.getEmailPhoneByUserId(userId, type, request.getRequestContext());
+      type = getType(type);
+      logger.info(
+              request.getRequestContext(),
+              "OTPActor:verifyOTP:getEmailPhoneByUserId: called for userId = "
+                      + userId
+                      + " ,key = "
+                      + OTPUtil.maskId(key, type));
+    }
+    // Retrieving OTP details from the service
+    Map<String, Object> otpDetails =
+            otpService.getOTPDetailsV3(type, key, request.getRequestContext());
+    // If OTP details not found, throw error
+    if (MapUtils.isEmpty(otpDetails)) {
+      logger.info(
+              request.getRequestContext(),
+              "OTP_VALIDATION_FAILED:OTPActor:verifyOTP: Details not found for Key = "
+                      + OTPUtil.maskId(key, type)
+                      + " type = "
+                      + type);
+      ProjectCommonException.throwClientErrorException(ResponseCode.errorOTPExpired);
+    }
+    // Check if the number of remaining attempts is exceeded
+    int remainingCount = getRemainingAttemptedCount(otpDetails);
+    if (remainingCount < 0) {
+      logger.info(
+              request.getRequestContext(),
+              "OTP_VALIDATION_FAILED:OTPActor:verifyOTP: Attempts Exceeded For The OTP = "
+                      + OTPUtil.maskId(key, type)
+                      + " type = "
+                      + type);
+      ProjectCommonException.throwClientErrorException(ResponseCode.errorOTPAttemptExceeded);
+    }
+    // Retrieve OTP from the database
+    String otpInDB = (String) otpDetails.get(JsonKey.OTP);
+    // Check if OTPs are blank
+    if (StringUtils.isBlank(otpInDB) || StringUtils.isBlank(otpInRequest)) {
+      logger.info(
+              request.getRequestContext(),
+              "OTP_VALIDATION_FAILED : OTPActor:verifyOTP: Mismatch for Key = "
+                      + OTPUtil.maskId(key, type)
+                      + " otpInRequest = "
+                      + OTPUtil.maskOTP(otpInRequest)
+                      + " otpInDB = "
+                      + OTPUtil.maskOTP(otpInDB));
+      ProjectCommonException.throwClientErrorException(ResponseCode.errorInvalidOTP);
+    }
+    // If OTPs match, update OTP details and send success response
+    if (otpInRequest.equals(otpInDB)) {
+      logger.info(
+              request.getRequestContext(),
+              "OTP_VALIDATION_SUCCESS:OTPActor:verifyOTP: Verified successfully Key = "
+                      + OTPUtil.maskId(key, type));
+      int length = 16;
+      Map<String, Object> parametersMap = new HashMap<>();
+      parametersMap.put(JsonKey.TYPE, type);
+      parametersMap.put(JsonKey.KEY, key);
+      String accessToken = generateRandomString(length);
+      parametersMap.put("contextToken", accessToken);
+      otpService.updateOTPDetailsV3(parametersMap, request.getRequestContext());
+      Response response = new Response();
+      response.put(JsonKey.RESPONSE, JsonKey.SUCCESS);
+      response.put("accessToken",accessToken);
+      sender().tell(response, self());
+    } else {
+      logger.info(
+              request.getRequestContext(),
+              "OTP_VALIDATION_FAILED: OTPActor:verifyOTP: Incorrect OTP Key = "
+                      + OTPUtil.maskId(key, type)
+                      + " otpInRequest = "
+                      + OTPUtil.maskOTP(otpInRequest)
+                      + " otpInDB = "
+                      + OTPUtil.maskOTP(otpInDB));
+      handleMismatchOtp(type, key, otpDetails, request.getRequestContext());
+    }
+  }
+
+
+  /**
+   * Generates a random string of the specified length using characters from a predefined set.
+   * @param length The length of the random string to generate.
+   * @return A randomly generated string.
+   */
+  public static String generateRandomString(int length) {
+    // Create a SecureRandom instance to generate random numbers securely
+    SecureRandom random = new SecureRandom();
+    // StringBuilder to build the random string
+    StringBuilder sb = new StringBuilder(length);
+    // Iterate 'length' times to generate random characters
+    for (int i = 0; i < length; i++) {
+      // Generate a random index within the range of the characters set
+      int randomIndex = random.nextInt(CHARACTERS.length());
+      // Append the character at the randomly generated index to the StringBuilder
+      sb.append(CHARACTERS.charAt(randomIndex));
+    }
+    return sb.toString();
+  }
 }
