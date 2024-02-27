@@ -395,12 +395,12 @@ public class OTPActor extends BaseActor {
       Map<String, Object> parametersMap = new HashMap<>();
       parametersMap.put(JsonKey.TYPE, type);
       parametersMap.put(JsonKey.KEY, key);
-      String accessToken = generateRandomString(length);
-      parametersMap.put("contextToken", accessToken);
+      String contextToken = generateRandomString(length);
+      parametersMap.put(JsonKey.CONTEXT_TOKEN, contextToken);
       otpService.updateOTPDetailsV3(parametersMap, request.getRequestContext());
       Response response = new Response();
       response.put(JsonKey.RESPONSE, JsonKey.SUCCESS);
-      response.put("accessToken",accessToken);
+      response.put(JsonKey.CONTEXT_TOKEN,contextToken);
       sender().tell(response, self());
     } else {
       logger.info(
