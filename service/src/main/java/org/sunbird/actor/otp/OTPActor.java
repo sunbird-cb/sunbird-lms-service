@@ -4,6 +4,7 @@ import akka.actor.ActorRef;
 
 import java.security.SecureRandom;
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -266,10 +267,14 @@ public class OTPActor extends BaseActor {
     String key = (String) request.getRequest().get(JsonKey.KEY);
     String userId = (String) request.getRequest().get(JsonKey.USER_ID);
     String contextType = (String) request.getRequest().get(JsonKey.CONTEXT_TYPE);
-    List<String> contextAttributesList = (new ObjectMapper()).convertValue(request.get(JsonKey.CONTEXT_ATTRIBUTES),
-            new TypeReference<>() {
-            });
-    String contextAttributes = String.join(",", contextAttributesList);
+    List<String> contextAttributesList = null;
+    Object contextAttributesObj = request.get(JsonKey.CONTEXT_ATTRIBUTES);
+    if (contextAttributesObj != null) {
+      contextAttributesList = (new ObjectMapper()).convertValue(contextAttributesObj,
+              new TypeReference<>() {
+              });
+    }
+    String contextAttributes = contextAttributesList != null ? String.join(",", contextAttributesList) : "";
     // If userId is not blank, retrieve email or phone associated with it and update key and type accordingly.
     if (StringUtils.isNotBlank(userId)) {
       key = otpService.getEmailPhoneByUserId(userId, type, request.getRequestContext());

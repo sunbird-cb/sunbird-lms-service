@@ -2,8 +2,6 @@ package controllers.otp.validator;
 
 import java.util.*;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang.StringUtils;
 import org.sunbird.exception.ProjectCommonException;
 import org.sunbird.exception.ResponseCode;
@@ -104,37 +102,11 @@ public class OtpRequestValidator extends BaseRequestValidator {
   }
 
   public void validateGenerateOtpRequestV3(Request otpRequest) {
-    commonValidationV3(otpRequest, false);
-    validateTemplateId(otpRequest);
-  }
-
-
-  private void commonValidationV3(Request otpRequest, boolean isOtpMandatory) {
-    List<String> orgTypeList = (new ObjectMapper()).convertValue(otpRequest.get(JsonKey.CONTEXT_ATTRIBUTES),
-            new TypeReference<>() {
-            });
     validateParam(
             (String) otpRequest.getRequest().get(JsonKey.CONTEXT_TYPE),
             ResponseCode.mandatoryParamsMissing,
             JsonKey.KEY);
-    validateParamList(
-            orgTypeList,
-            ResponseCode.mandatoryParamsMissing,
-            JsonKey.KEY);
-    validateParam(
-            (String) otpRequest.getRequest().get(JsonKey.KEY),
-            ResponseCode.mandatoryParamsMissing,
-            JsonKey.KEY);
-    validateParam(
-            (String) otpRequest.getRequest().get(JsonKey.TYPE),
-            ResponseCode.mandatoryParamsMissing,
-            JsonKey.TYPE);
-    if (isOtpMandatory) {
-      validateParam(
-              (String) otpRequest.getRequest().get(JsonKey.OTP),
-              ResponseCode.mandatoryParamsMissing,
-              JsonKey.OTP);
-    }
-    validateTypeAndKey(otpRequest);
+    commonValidation(otpRequest, false);
+    validateTemplateId(otpRequest);
   }
 }
