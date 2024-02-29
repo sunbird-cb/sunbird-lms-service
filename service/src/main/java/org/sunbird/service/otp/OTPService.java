@@ -1,6 +1,8 @@
 package org.sunbird.service.otp;
 
+import java.util.List;
 import java.util.Map;
+
 import org.sunbird.dao.otp.OTPDao;
 import org.sunbird.dao.otp.impl.OTPDaoImpl;
 import org.sunbird.request.RequestContext;
@@ -45,4 +47,46 @@ public class OTPService {
   public void updateAttemptCount(Map<String, Object> otpDetails, RequestContext context) {
     otpDao.updateAttemptCount(otpDetails, context);
   }
+
+
+  /**
+   * Inserts OTP details into the database.
+   *
+   * @param type The type of the OTP (e.g., email, phone).
+   * @param key The key associated with the OTP.
+   * @param otp The OTP to be inserted.
+   * @param contextType The type of context associated with the OTP.
+   * @param contextAttributes The attributes of the context associated with the OTP.
+   * @param context The request context.
+   */
+  public void insertOTPDetailsV3(String type, String key, String otp, String contextType, String contextAttributes, RequestContext context) {
+    // Delegate the insertion operation to the OTP DAO.
+    otpDao.insertOTPDetailsV3(type, key, otp, contextType, contextAttributes, context);
+  }
+
+
+  /**
+   * Retrieves OTP details from the database.
+   *
+   * @param type The type of the OTP (e.g., email, phone).
+   * @param key The key associated with the OTP .
+   * @param requestContext The request context.
+   * @return A map containing OTP details.
+   */
+  public Map<String, Object> getOTPDetailsV3(String type, String key,RequestContext requestContext) {
+    // Delegate the retrieval operation to the OTP DAO.
+    return otpDao.getOTPDetailsV3(type, key, requestContext);
+  }
+
+  /**
+   * Updates the OTP (One-Time Password) details based on the provided parameters map.
+   * This method delegates the update operation to the OTP DAO (Data Access Object).
+   * @param parametersMap A map containing parameters for updating OTP details.
+   * @param requestContext The request context associated with the update operation.
+   */
+  public void updateOTPDetailsV3(Map<String, Object> parametersMap, RequestContext requestContext) {
+    // Delegate the update operation to the OTP DAO
+    otpDao.updateOTPDetailsV3(parametersMap, requestContext);
+  }
+
 }

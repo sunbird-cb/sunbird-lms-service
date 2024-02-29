@@ -1,9 +1,7 @@
 package controllers.otp.validator;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
 import org.apache.commons.lang.StringUtils;
 import org.sunbird.exception.ProjectCommonException;
 import org.sunbird.exception.ResponseCode;
@@ -101,5 +99,14 @@ public class OtpRequestValidator extends BaseRequestValidator {
                   JsonKey.RECOVERY_EMAIL,
                   JsonKey.RECOVERY_PHONE)));
     }
+  }
+
+  public void validateGenerateOtpRequestV3(Request otpRequest) {
+    validateParam(
+            (String) otpRequest.getRequest().get(JsonKey.CONTEXT_TYPE),
+            ResponseCode.mandatoryParamsMissing,
+            JsonKey.KEY);
+    commonValidation(otpRequest, false);
+    validateTemplateId(otpRequest);
   }
 }

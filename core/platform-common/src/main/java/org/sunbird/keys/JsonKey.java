@@ -646,5 +646,8 @@ public final class JsonKey {
 
   public static final String SELF_REGISTRATION = "self_registration";
   public static final String CREATEDBY = "createdby";
+  public static final String CONTEXT_TYPE = "contextType";
+  public static final String CONTEXT_ATTRIBUTES = "contextAttributes";
+  public static final String CONTEXT_TOKEN = "contextToken";
   private JsonKey() {}
 }
