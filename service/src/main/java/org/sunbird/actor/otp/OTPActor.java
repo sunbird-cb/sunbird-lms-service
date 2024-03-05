@@ -1,18 +1,11 @@
 package org.sunbird.actor.otp;
 
 import akka.actor.ActorRef;
-
-import java.security.SecureRandom;
-import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import javax.inject.Inject;
-import javax.inject.Named;
-
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.sunbird.actor.core.BaseActor;
@@ -34,12 +27,21 @@ import org.sunbird.util.otp.OTPUtil;
 import org.sunbird.util.ratelimit.OtpRateLimiter;
 import org.sunbird.util.ratelimit.RateLimiter;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.text.MessageFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 public class OTPActor extends BaseActor {
 
   private final OTPService otpService = new OTPService();
   private final RateLimitService rateLimitService = new RateLimitServiceImpl();
   private static final String SUNBIRD_OTP_ALLOWED_ATTEMPT = "sunbird_otp_allowed_attempt";
-  private static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  private static final String SECRET_KEY = "RW97NrQaSDYKKIgfVPE3mTHUiCzcIMZMYP1zZdQWwlFoXVxmUjmRhitBhFA13SIa";
+  private final ObjectMapper mapper = new ObjectMapper();
 
   @Inject
   @Named("send_otp_actor")
@@ -334,7 +336,7 @@ public class OTPActor extends BaseActor {
    * otherwise, handles the mismatch or invalid OTP.
    * @param request The request containing OTP-related information.
    */
-  private void verifyOTPV3(Request request) {
+  private void verifyOTPV3(Request request) throws JsonProcessingException {
     // Extracting parameters from the request
     String type = (String) request.getRequest().get(JsonKey.TYPE);
     String key = (String) request.getRequest().get(JsonKey.KEY);
@@ -396,11 +398,13 @@ public class OTPActor extends BaseActor {
               request.getRequestContext(),
               "OTP_VALIDATION_SUCCESS:OTPActor:verifyOTP: Verified successfully Key = "
                       + OTPUtil.maskId(key, type));
-      int length = 16;
       Map<String, Object> parametersMap = new HashMap<>();
       parametersMap.put(JsonKey.TYPE, type);
       parametersMap.put(JsonKey.KEY, key);
-      String contextToken = generateRandomString(length);
+      Map<String,String> contextDetailsMap =  new HashMap<>();
+      contextDetailsMap.put(JsonKey.CONTEXT_TYPE,(String) otpDetails.get(JsonKey.CONTEXT_TYPE.toLowerCase()));
+      contextDetailsMap.put(JsonKey.CONTEXT_ATTRIBUTES,(String)otpDetails.get(JsonKey.CONTEXT_ATTRIBUTES.toLowerCase()));
+      String contextToken = generateToken(mapper.writeValueAsString(contextDetailsMap));
       parametersMap.put(JsonKey.CONTEXT_TOKEN, contextToken);
       otpService.updateOTPDetailsV3(parametersMap, request.getRequestContext());
       Response response = new Response();
@@ -421,23 +425,13 @@ public class OTPActor extends BaseActor {
   }
 
 
-  /**
-   * Generates a random string of the specified length using characters from a predefined set.
-   * @param length The length of the random string to generate.
-   * @return A randomly generated string.
-   */
-  public static String generateRandomString(int length) {
-    // Create a SecureRandom instance to generate random numbers securely
-    SecureRandom random = new SecureRandom();
-    // StringBuilder to build the random string
-    StringBuilder sb = new StringBuilder(length);
-    // Iterate 'length' times to generate random characters
-    for (int i = 0; i < length; i++) {
-      // Generate a random index within the range of the characters set
-      int randomIndex = random.nextInt(CHARACTERS.length());
-      // Append the character at the randomly generated index to the StringBuilder
-      sb.append(CHARACTERS.charAt(randomIndex));
-    }
-    return sb.toString();
+  public static String generateToken(String contextFields) {
+    long currentTimeMillis = System.currentTimeMillis();
+    long expirationTimeMillis = currentTimeMillis + 3600000; // Token expires in 1 hour
+    return Jwts.builder()
+            .setSubject(contextFields)
+            .setExpiration(new Date(expirationTimeMillis))
+            .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
+            .compact();
   }
 }
