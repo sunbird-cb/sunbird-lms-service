@@ -40,7 +40,6 @@ public class OTPActor extends BaseActor {
   private final OTPService otpService = new OTPService();
   private final RateLimitService rateLimitService = new RateLimitServiceImpl();
   private static final String SUNBIRD_OTP_ALLOWED_ATTEMPT = "sunbird_otp_allowed_attempt";
-  private static final String SECRET_KEY = "RW97NrQaSDYKKIgfVPE3mTHUiCzcIMZMYP1zZdQWwlFoXVxmUjmRhitBhFA13SIa";
   private final ObjectMapper mapper = new ObjectMapper();
 
   @Inject
@@ -431,7 +430,7 @@ public class OTPActor extends BaseActor {
     return Jwts.builder()
             .setSubject(contextFields)
             .setExpiration(new Date(expirationTimeMillis))
-            .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
+            .signWith(SignatureAlgorithm.HS256, ProjectUtil.getConfigValue(JsonKey.OTP_VALIDATION_SECRET_KEY))
             .compact();
   }
 }
