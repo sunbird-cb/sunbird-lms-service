@@ -401,8 +401,8 @@ public class OTPActor extends BaseActor {
       parametersMap.put(JsonKey.TYPE, type);
       parametersMap.put(JsonKey.KEY, key);
       Map<String,String> contextDetailsMap =  new HashMap<>();
-      contextDetailsMap.put(JsonKey.CONTEXT_TYPE,(String) otpDetails.get(JsonKey.CONTEXT_TYPE.toLowerCase()));
-      contextDetailsMap.put(JsonKey.CONTEXT_ATTRIBUTES,(String)otpDetails.get(JsonKey.CONTEXT_ATTRIBUTES.toLowerCase()));
+      contextDetailsMap.put(JsonKey.CONTEXT_TYPE,(String) otpDetails.get(JsonKey.CONTEXT_TYPE));
+      contextDetailsMap.put(JsonKey.CONTEXT_ATTRIBUTES,(String)otpDetails.get(JsonKey.CONTEXT_ATTRIBUTES));
       String contextToken = generateToken(mapper.writeValueAsString(contextDetailsMap));
       parametersMap.put(JsonKey.CONTEXT_TOKEN, contextToken);
       otpService.updateOTPDetailsV3(parametersMap, request.getRequestContext());
