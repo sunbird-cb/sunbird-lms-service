@@ -649,5 +649,7 @@ public final class JsonKey {
   public static final String CONTEXT_TYPE = "contextType";
   public static final String CONTEXT_ATTRIBUTES = "contextAttributes";
   public static final String CONTEXT_TOKEN = "contextToken";
+  public static final String OTP_VALIDATION_SECRET_KEY = "otpValidationSecretKey";
+  public static final String OTP_EXPIRATION_TIME_TOKEN = "otpExpirationTimeToken";
   private JsonKey() {}
 }
