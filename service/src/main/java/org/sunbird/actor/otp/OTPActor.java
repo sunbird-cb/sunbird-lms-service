@@ -426,7 +426,7 @@ public class OTPActor extends BaseActor {
 
   public static String generateToken(String contextFields) {
     long currentTimeMillis = System.currentTimeMillis();
-    long expirationTimeMillis = currentTimeMillis + Long.parseLong(ProjectUtil.getConfigValue(JsonKey.OTP_EXPIRATION_TIME_TOKEN)); // Token expires in 1 hour
+    long expirationTimeMillis = currentTimeMillis + Long.parseLong(ProjectUtil.getConfigValue(JsonKey.OTP_EXPIRATION_TIME_TOKEN)); 
     return Jwts.builder()
             .setSubject(contextFields)
             .setExpiration(new Date(expirationTimeMillis))
