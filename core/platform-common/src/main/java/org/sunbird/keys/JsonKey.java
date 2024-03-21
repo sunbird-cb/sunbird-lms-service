@@ -651,6 +651,5 @@ public final class JsonKey {
   public static final String CONTEXT_TOKEN = "contextToken";
   public static final String OTP_VALIDATION_SECRET_KEY = "otpValidationSecretKey";
   public static final String OTP_EXPIRATION_TIME_TOKEN = "otpExpirationTimeToken";
-  public static final String SUNBIRD_CONTEXT_TOKEN_OTP_EXPIRATION = "sunbird_context_token_otp_expiration";
   private JsonKey() {}
 }

@@ -162,8 +162,8 @@ public class OTPDaoImpl implements OTPDao {
 
   @Override
   public void updateOTPDetailsV3(String keyspaceName, String tableName, Map<String, Object> request, Map<String, Object> compositeKey, RequestContext context) {
-    String expirationInSeconds = PropertiesCache.getInstance().getProperty(JsonKey.SUNBIRD_CONTEXT_TOKEN_OTP_EXPIRATION);
-    int ttl = Integer.valueOf(expirationInSeconds);
+    String expirationInSeconds = PropertiesCache.getInstance().getProperty(JsonKey.OTP_EXPIRATION_TIME_TOKEN);
+    int ttl = Integer.valueOf(expirationInSeconds)/1000;
     cassandraOperation.updateRecordWithTTL(keyspaceName, tableName, request, compositeKey,ttl,context);
   }
 
