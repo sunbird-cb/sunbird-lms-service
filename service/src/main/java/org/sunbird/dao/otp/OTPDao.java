@@ -62,12 +62,7 @@ public interface OTPDao {
   /**
    * Updates the OTP (One-Time Password) details based on the provided parameters map.
    * This method is responsible for updating OTP details in the system.
-   *
-   * @param parametersMap A map containing parameters for updating OTP details.
-   *                      It may include information such as type, key, and context token.
-   * @param requestContext The request context associated with the update operation,
-   *                       providing contextual information for the update process.
    */
-  void updateOTPDetailsV3(Map<String, Object> parametersMap, RequestContext requestContext);
+  void updateOTPDetailsV3(String keyspaceName, String tableName, Map<String, Object> request, Map<String, Object> compositeKey, RequestContext context);
 
 }

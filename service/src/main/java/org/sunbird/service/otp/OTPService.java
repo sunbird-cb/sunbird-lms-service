@@ -81,12 +81,10 @@ public class OTPService {
   /**
    * Updates the OTP (One-Time Password) details based on the provided parameters map.
    * This method delegates the update operation to the OTP DAO (Data Access Object).
-   * @param parametersMap A map containing parameters for updating OTP details.
-   * @param requestContext The request context associated with the update operation.
    */
-  public void updateOTPDetailsV3(Map<String, Object> parametersMap, RequestContext requestContext) {
+  public void updateOTPDetailsV3(String keyspaceName, String tableName, Map<String, Object> request, Map<String, Object> compositeKey, RequestContext context) {
     // Delegate the update operation to the OTP DAO
-    otpDao.updateOTPDetailsV3(parametersMap, requestContext);
+    otpDao.updateOTPDetailsV3(keyspaceName, tableName, request, compositeKey,context);
   }
 
 }

@@ -397,15 +397,15 @@ public class OTPActor extends BaseActor {
               request.getRequestContext(),
               "OTP_VALIDATION_SUCCESS:OTPActor:verifyOTP: Verified successfully Key = "
                       + OTPUtil.maskId(key, type));
-      Map<String, Object> parametersMap = new HashMap<>();
-      parametersMap.put(JsonKey.TYPE, type);
-      parametersMap.put(JsonKey.KEY, key);
-      Map<String,String> contextDetailsMap =  new HashMap<>();
-      contextDetailsMap.put(JsonKey.CONTEXT_TYPE,(String) otpDetails.get(JsonKey.CONTEXT_TYPE));
-      contextDetailsMap.put(JsonKey.CONTEXT_ATTRIBUTES,(String)otpDetails.get(JsonKey.CONTEXT_ATTRIBUTES));
-      String contextToken = generateToken(mapper.writeValueAsString(contextDetailsMap));
-      parametersMap.put(JsonKey.CONTEXT_TOKEN, contextToken);
-      otpService.updateOTPDetailsV3(parametersMap, request.getRequestContext());
+      Map<String, Object> compostieKeyMap = new HashMap<>();
+      compostieKeyMap.put(JsonKey.TYPE, type);
+      compostieKeyMap.put(JsonKey.KEY, key);
+      Map<String,Object> requestParamsMap =  new HashMap<>();
+      requestParamsMap.put(JsonKey.CONTEXT_TYPE, otpDetails.get(JsonKey.CONTEXT_TYPE));
+      requestParamsMap.put(JsonKey.CONTEXT_ATTRIBUTES,otpDetails.get(JsonKey.CONTEXT_ATTRIBUTES));
+      String contextToken = generateToken(mapper.writeValueAsString(requestParamsMap));
+      requestParamsMap.put(JsonKey.CONTEXT_TOKEN, contextToken);
+      otpService.updateOTPDetailsV3(JsonKey.SUNBIRD,JsonKey.OTP,requestParamsMap,compostieKeyMap, request.getRequestContext());
       Response response = new Response();
       response.put(JsonKey.RESPONSE, JsonKey.SUCCESS);
       response.put(JsonKey.CONTEXT_TOKEN,contextToken);
