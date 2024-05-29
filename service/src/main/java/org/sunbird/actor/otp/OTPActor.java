@@ -65,10 +65,11 @@ public class OTPActor extends BaseActor {
   }
 
   private void generateOTP(Request request) {
-    logger.debug(request.getRequestContext(), "OTPActor:generateOTP method call start.");
+    logger.info(request.getRequestContext(), "OTPActor:generateOTP method call start.");
     String type = (String) request.getRequest().get(JsonKey.TYPE);
     String key = (String) request.getRequest().get(JsonKey.KEY);
     String userId = (String) request.getRequest().get(JsonKey.USER_ID);
+    logger.info(request.getRequestContext(), "Received request with type = " + type + ", key = " + key + ", userId = " + userId);
     if (StringUtils.isNotBlank(userId)) {
       key = otpService.getEmailPhoneByUserId(userId, type, request.getRequestContext());
       type = getType(type);
@@ -79,16 +80,18 @@ public class OTPActor extends BaseActor {
               + " ,key = "
               + OTPUtil.maskId(key, type));
     }
-
+    logger.info(request.getRequestContext(), "Proceeding to rate limit check for key = " + OTPUtil.maskId(key, type));
     rateLimitService.throttleByKey(
         key,
         type,
         new RateLimiter[] {OtpRateLimiter.HOUR, OtpRateLimiter.DAY},
         request.getRequestContext());
 
+    logger.info(request.getRequestContext(), "Rate limiting check passed for key = " + OTPUtil.maskId(key, type));
     String otp;
     Map<String, Object> details = otpService.getOTPDetails(type, key, request.getRequestContext());
 
+    logger.info(request.getRequestContext(), "Fetched OTP details for key = " + OTPUtil.maskId(key, type));
     if (MapUtils.isEmpty(details)) {
       otp = OTPUtil.generateOTP(request.getRequestContext());
       logger.info(
@@ -110,8 +113,12 @@ public class OTPActor extends BaseActor {
     logger.info(
         request.getRequestContext(),
         "OTPActor:sendOTP : Calling SendOTPActor for Key = " + OTPUtil.maskId(key, type));
-    sendOTP(request, otp, key, request.getRequestContext());
-
+    try {
+      sendOTP(request, otp, key, request.getRequestContext());
+      logger.info(request.getRequestContext(), "OTP Send Successfully for type = " + type + ", key = " + key + ", userId = " + userId);
+    } catch (Exception e){
+      logger.error("Failed to send OTP : "+e.getMessage(),e);
+    }
     Response response = new Response();
     response.put(JsonKey.RESPONSE, JsonKey.SUCCESS);
     sender().tell(response, self());
