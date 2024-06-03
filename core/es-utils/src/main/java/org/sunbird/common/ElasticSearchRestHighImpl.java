@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
@@ -451,6 +452,7 @@ public class ElasticSearchRestHighImpl implements ElasticSearchService {
         groupByFinalList.add(groupByMap);
       }
       searchSourceBuilder = addAggregations(searchSourceBuilder, groupByFinalList);
+      System.out.println("printing es searchSourceBuilder "+searchSourceBuilder.toString());
     }
     logger.info(
         context,
@@ -458,7 +460,7 @@ public class ElasticSearchRestHighImpl implements ElasticSearchService {
             + index
             + ", with query = "
             + searchSourceBuilder.toString());
-
+    System.out.println("printing es query "+searchSourceBuilder.toString());
     searchRequest.source(searchSourceBuilder);
     Promise<Map<String, Object>> promise = Futures.promise();
 
@@ -632,14 +634,24 @@ public class ElasticSearchRestHighImpl implements ElasticSearchService {
           searchSourceBuilder.aggregation(
                   AggregationBuilders.terms(key).field(key + ElasticSearchHelper.RAW_APPEND));
         } else {
+          Predicate<String> doesNotRequireRaw = field ->
+                  field.equals("profileDetails.profileStatus") ||
+                          field.equals("profileDetails.additionalProperties.tag") ||
+                          field.equals("profileDetails.additionalProperties.webPortalLang") ||
+                          field.equals("profileDetails.employmentDetails.departmentName") ||
+                          field.equals("profileDetails.employmentDetails.employeeCode") ||
+                          field.equals("profileDetails.personalDetails.category") ||
+                          field.equals("profileDetails.personalDetails.domicileMedium") ||
+                          field.equals("profileDetails.personalDetails.gender");
           for (Map<String, Object> groupByMap : facets) {
             String groupByParent = (String) groupByMap.get(key);
-            if (!value.contains(".")) {
-              searchSourceBuilder.aggregation(AggregationBuilders.terms(groupByParent)
-                      .field(groupByParent + ElasticSearchHelper.RAW_APPEND)
-                      .size(10000));
-            }
+            String aggregatedField = doesNotRequireRaw.test(groupByParent) ? groupByParent : groupByParent + ElasticSearchHelper.RAW_APPEND;
+
+            searchSourceBuilder.aggregation(AggregationBuilders.terms(groupByParent)
+                    .field(aggregatedField)
+                    .size(10000));
           }
+
         }
       }
       logger.debug(
