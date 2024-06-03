@@ -645,11 +645,17 @@ public class ElasticSearchRestHighImpl implements ElasticSearchService {
                           field.equals("profileDetails.personalDetails.gender");
           for (Map<String, Object> groupByMap : facets) {
             String groupByParent = (String) groupByMap.get(key);
-            String aggregatedField = doesNotRequireRaw.test(groupByParent) ? groupByParent : groupByParent + ElasticSearchHelper.RAW_APPEND;
+            if (!value.contains(".")) {
+              searchSourceBuilder.aggregation(AggregationBuilders.terms(groupByParent)
+                      .field(groupByParent + ElasticSearchHelper.RAW_APPEND)
+                      .size(10000));
+            } else {
+              String aggregatedField = doesNotRequireRaw.test(groupByParent) ? groupByParent : groupByParent + ElasticSearchHelper.RAW_APPEND;
 
-            searchSourceBuilder.aggregation(AggregationBuilders.terms(groupByParent)
-                    .field(aggregatedField)
-                    .size(10000));
+              searchSourceBuilder.aggregation(AggregationBuilders.terms(groupByParent)
+                      .field(aggregatedField)
+                      .size(10000));
+            }
           }
 
         }
