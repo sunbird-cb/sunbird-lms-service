@@ -671,7 +671,9 @@ public class ElasticSearchHelper {
       search.setQueryFields((List<String>) searchQueryMap.get(JsonKey.QUERY_FIELDS));
     }
     if (searchQueryMap.containsKey(JsonKey.FACETS)) {
-      search.setFacets((List<Map<String, String>>) searchQueryMap.get(JsonKey.FACETS));
+      List<String> facetsList= (List<String>) searchQueryMap.get(JsonKey.FACETS);
+      search.setFacets(facetsList);
+    //  search.setFacets((List<Map<String, String>>) searchQueryMap.get(JsonKey.FACETS));
     }
     if (searchQueryMap.containsKey(JsonKey.FIELDS)) {
       search.setFields((List<String>) searchQueryMap.get(JsonKey.FIELDS));
@@ -731,9 +733,16 @@ public class ElasticSearchHelper {
   }
 
   private static List getFinalFacetList(
-      SearchResponse response, SearchDTO searchDTO, List finalFacetList) {
+          SearchResponse response, SearchDTO searchDTO, List finalFacetList) {
     if (null != searchDTO.getFacets() && !searchDTO.getFacets().isEmpty()) {
-      Map<String, String> m1 = searchDTO.getFacets().get(0);
+      // Map<String, String> m1 = searchDTO.getFacets().get(0);
+      List<Map<String, String>> groupByFinalList = new ArrayList<>();
+      for (String facet : searchDTO.getFacets()) {
+        Map<String, String> groupByMap = new HashMap<String, String>();
+        groupByMap.put("groupByParent", facet);
+        groupByFinalList.add(groupByMap);
+      }
+      Map<String,String> m1 = groupByFinalList.get(0);
       for (Map.Entry<String, String> entry : m1.entrySet()) {
         String field = entry.getKey();
         String aggsType = entry.getValue();
@@ -751,16 +760,20 @@ public class ElasticSearchHelper {
             aggsList.add(internalMap);
           }
         } else {
-          Terms aggs = response.getAggregations().get(field);
-          for (Bucket bucket : aggs.getBuckets()) {
-            Map internalMap = new HashMap();
-            internalMap.put(JsonKey.NAME, bucket.getKey());
-            internalMap.put(JsonKey.COUNT, bucket.getDocCount());
-            aggsList.add(internalMap);
+          List<String> facets = searchDTO.getFacets();
+          for (String facet : facets) {
+            Terms aggs = response.getAggregations().get(facet);
+            for (Bucket bucket : aggs.getBuckets()) {
+              Map internalMap = new HashMap();
+//              internalMap.put(JsonKey.NAME, bucket.getKey());
+              internalMap.put(JsonKey.NAME, facet);
+              internalMap.put(JsonKey.COUNT, bucket.getDocCount());
+              aggsList.add(internalMap);
+            }
           }
         }
         facetMap.put("values", aggsList);
-        facetMap.put(JsonKey.NAME, field);
+        //    facetMap.put(JsonKey.NAME, aggsType);
         finalFacetList.add(facetMap);
       }
     }

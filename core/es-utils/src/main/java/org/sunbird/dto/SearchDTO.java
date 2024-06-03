@@ -16,7 +16,8 @@ public class SearchDTO {
   @SuppressWarnings("rawtypes")
   private List<Map> properties;
 
-  private List<Map<String, String>> facets = new ArrayList<>();
+//  private List<Map<String, String>> facets = new ArrayList<>();
+  private List<String> facets;
   private List<String> fields;
   private List<String> excludedFields;
   private Map<String, Object> sortBy = new HashMap<>();
@@ -81,11 +82,20 @@ public class SearchDTO {
     this.limit = limit;
   }
 
-  public List<Map<String, String>> getFacets() {
+//  public List<Map<String, String>> getFacets() {
+//    return facets;
+//  }
+//
+//  public void setFacets(List<Map<String, String>> facets) {
+//    this.facets = facets;
+//  }
+
+
+  public List<String> getFacets() {
     return facets;
   }
 
-  public void setFacets(List<Map<String, String>> facets) {
+  public void setFacets(List<String> facets) {
     this.facets = facets;
   }
 

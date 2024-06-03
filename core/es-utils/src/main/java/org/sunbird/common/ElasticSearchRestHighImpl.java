@@ -443,8 +443,14 @@ public class ElasticSearchRestHighImpl implements ElasticSearchService {
     searchSourceBuilder.query(query);
     List finalFacetList = new ArrayList();
 
+    List<Map<String, Object>> groupByFinalList = new ArrayList<>();
     if (null != searchDTO.getFacets() && !searchDTO.getFacets().isEmpty()) {
-      searchSourceBuilder = addAggregations(searchSourceBuilder, searchDTO.getFacets());
+      for (String facet : searchDTO.getFacets()) {
+        Map<String, Object> groupByMap = new HashMap<String, Object>();
+        groupByMap.put("groupByParent", facet);
+        groupByFinalList.add(groupByMap);
+      }
+      searchSourceBuilder = addAggregations(searchSourceBuilder, groupByFinalList);
     }
     logger.info(
         context,
@@ -604,31 +610,44 @@ public class ElasticSearchRestHighImpl implements ElasticSearchService {
   }
 
   private static SearchSourceBuilder addAggregations(
-      SearchSourceBuilder searchSourceBuilder, List<Map<String, String>> facets) {
+      SearchSourceBuilder searchSourceBuilder, List<Map<String, Object>> facets) {
     long startTime = System.currentTimeMillis();
     logger.debug(
         null, "ElasticSearchRestHighImpl:addAggregations: method started at ==" + startTime);
-    Map<String, String> map = facets.get(0);
-    for (Map.Entry<String, String> entry : map.entrySet()) {
+ //   Map<String, String> map = facets.get(0);
+    Object firstElement = facets.get(0);
+    if (firstElement instanceof Map) {
+      Map<?, ?> map = (Map<?, ?>) firstElement;
+      for (Map.Entry<?, ?> entry : map.entrySet()) {
 
-      String key = entry.getKey();
-      String value = entry.getValue();
-      if (JsonKey.DATE_HISTOGRAM.equalsIgnoreCase(value)) {
-        searchSourceBuilder.aggregation(
-            AggregationBuilders.dateHistogram(key)
-                .field(key + ElasticSearchHelper.RAW_APPEND)
-                .dateHistogramInterval(DateHistogramInterval.days(1)));
+        String key = entry.getKey().toString();
+        String value = entry.getValue().toString();
+        if (JsonKey.DATE_HISTOGRAM.equalsIgnoreCase(value)) {
+          searchSourceBuilder.aggregation(
+                  AggregationBuilders.dateHistogram(key)
+                          .field(key + ElasticSearchHelper.RAW_APPEND)
+                          .dateHistogramInterval(DateHistogramInterval.days(1)));
 
-      } else if (null == value) {
-        searchSourceBuilder.aggregation(
-            AggregationBuilders.terms(key).field(key + ElasticSearchHelper.RAW_APPEND));
+        } else if (null == value) {
+          searchSourceBuilder.aggregation(
+                  AggregationBuilders.terms(key).field(key + ElasticSearchHelper.RAW_APPEND));
+        } else {
+          for (Map<String, Object> groupByMap : facets) {
+            String groupByParent = (String) groupByMap.get(key);
+            if (!value.contains(".")) {
+              searchSourceBuilder.aggregation(AggregationBuilders.terms(groupByParent)
+                      .field(groupByParent + ElasticSearchHelper.RAW_APPEND)
+                      .size(10000));
+            }
+          }
+        }
       }
+      logger.debug(
+              null,
+              "ElasticSearchRestHighImpl:addAggregations: method end =="
+                      + " ,Total time elapsed = "
+                      + calculateEndTime(startTime));
     }
-    logger.debug(
-        null,
-        "ElasticSearchRestHighImpl:addAggregations: method end =="
-            + " ,Total time elapsed = "
-            + calculateEndTime(startTime));
     return searchSourceBuilder;
   }
 
