@@ -23,6 +23,7 @@ import org.elasticsearch.index.query.*;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
+import org.elasticsearch.search.aggregations.Aggregations;
 import org.elasticsearch.search.aggregations.bucket.histogram.DateHistogramInterval;
 import org.elasticsearch.search.aggregations.bucket.histogram.Histogram;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms;
@@ -762,13 +763,17 @@ public class ElasticSearchHelper {
         } else {
           List<String> facets = searchDTO.getFacets();
           for (String facet : facets) {
-            Terms aggs = response.getAggregations().get(facet);
-            for (Bucket bucket : aggs.getBuckets()) {
-              Map internalMap = new HashMap();
+            Aggregations aggregations = response.getAggregations();
+            if (aggregations != null) {
+              Terms aggs = aggregations.get(facet);
+              // Terms aggs = response.getAggregations().get(facet);
+              for (Bucket bucket : aggs.getBuckets()) {
+                Map internalMap = new HashMap();
 //              internalMap.put(JsonKey.NAME, bucket.getKey());
-              internalMap.put(JsonKey.NAME, facet);
-              internalMap.put(JsonKey.COUNT, bucket.getDocCount());
-              aggsList.add(internalMap);
+                internalMap.put(JsonKey.NAME, facet);
+                internalMap.put(JsonKey.COUNT, bucket.getDocCount());
+                aggsList.add(internalMap);
+              }
             }
           }
         }
