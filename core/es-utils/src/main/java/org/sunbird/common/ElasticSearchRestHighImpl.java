@@ -452,7 +452,6 @@ public class ElasticSearchRestHighImpl implements ElasticSearchService {
         groupByFinalList.add(groupByMap);
       }
       searchSourceBuilder = addAggregations(searchSourceBuilder, groupByFinalList);
-      System.out.println("printing es searchSourceBuilder "+searchSourceBuilder.toString());
     }
     logger.info(
         context,
@@ -460,7 +459,6 @@ public class ElasticSearchRestHighImpl implements ElasticSearchService {
             + index
             + ", with query = "
             + searchSourceBuilder.toString());
-    System.out.println("printing es query "+searchSourceBuilder.toString());
     searchRequest.source(searchSourceBuilder);
     Promise<Map<String, Object>> promise = Futures.promise();
 
