@@ -753,7 +753,6 @@ public class ElasticSearchHelper {
             }
           }
         }
-
         Map<String, Object> facetMap = new HashMap<>();
         facetMap.put("values", aggsList);
         facetMap.put(JsonKey.NAME, facet);
