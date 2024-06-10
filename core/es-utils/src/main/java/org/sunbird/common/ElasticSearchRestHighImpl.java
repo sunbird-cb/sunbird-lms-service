@@ -632,15 +632,7 @@ public class ElasticSearchRestHighImpl implements ElasticSearchService {
           searchSourceBuilder.aggregation(
                   AggregationBuilders.terms(key).field(key + ElasticSearchHelper.RAW_APPEND));
         } else {
-          Predicate<String> doesNotRequireRaw = field ->
-                  field.equals("profileDetails.profileStatus") ||
-                          field.equals("profileDetails.additionalProperties.tag") ||
-                          field.equals("profileDetails.additionalProperties.webPortalLang") ||
-                          field.equals("profileDetails.employmentDetails.departmentName") ||
-                          field.equals("profileDetails.employmentDetails.employeeCode") ||
-                          field.equals("profileDetails.personalDetails.category") ||
-                          field.equals("profileDetails.personalDetails.domicileMedium") ||
-                          field.equals("profileDetails.personalDetails.gender");
+          Predicate<String> doesNotRequireRaw = field -> field.startsWith("profileDetails");
           for (Map<String, Object> groupByMap : facets) {
             String groupByParent = (String) groupByMap.get(key);
             if (!value.contains(".")) {
