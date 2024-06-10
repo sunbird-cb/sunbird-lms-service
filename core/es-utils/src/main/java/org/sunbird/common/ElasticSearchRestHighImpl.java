@@ -452,7 +452,6 @@ public class ElasticSearchRestHighImpl implements ElasticSearchService {
         groupByFinalList.add(groupByMap);
       }
       searchSourceBuilder = addAggregations(searchSourceBuilder, groupByFinalList);
-      System.out.println("printing es searchSourceBuilder "+searchSourceBuilder.toString());
     }
     logger.info(
         context,
@@ -460,7 +459,6 @@ public class ElasticSearchRestHighImpl implements ElasticSearchService {
             + index
             + ", with query = "
             + searchSourceBuilder.toString());
-
     searchRequest.source(searchSourceBuilder);
     Promise<Map<String, Object>> promise = Futures.promise();
 
@@ -634,7 +632,12 @@ public class ElasticSearchRestHighImpl implements ElasticSearchService {
           searchSourceBuilder.aggregation(
                   AggregationBuilders.terms(key).field(key + ElasticSearchHelper.RAW_APPEND));
         } else {
-          Predicate<String> doesNotRequireRaw = field -> field.startsWith("profileDetails");
+          //Predicate<String> doesNotRequireRaw = field -> field.startsWith("profileDetails");
+          Predicate<String> requiresRaw = field ->
+                  field.startsWith("profileDetails") &&
+                          !field.equals("profileDetails.profileStatus") ||
+                          !field.equals("profileDetails.profileDesignationStatus") ||
+                          !field.equals("profileDetails.profileGroupStatus");
           for (Map<String, Object> groupByMap : facets) {
             String groupByParent = (String) groupByMap.get(key);
             if (!value.contains(".")) {
@@ -642,7 +645,7 @@ public class ElasticSearchRestHighImpl implements ElasticSearchService {
                       .field(groupByParent + ElasticSearchHelper.RAW_APPEND)
                       .size(10000));
             } else {
-              String aggregatedField = doesNotRequireRaw.test(groupByParent) ? groupByParent : groupByParent + ElasticSearchHelper.RAW_APPEND;
+              String aggregatedField = requiresRaw.test(groupByParent) ? groupByParent : groupByParent + ElasticSearchHelper.RAW_APPEND;
 
               searchSourceBuilder.aggregation(AggregationBuilders.terms(groupByParent)
                       .field(aggregatedField)
