@@ -86,7 +86,7 @@ public interface ResponseMessage {
     String ERROR_INVALID_PARAMETER_SIZE =
         "Parameter {0} is of invalid size (expected: {1}, actual: {2}).";
     String ERROR_RATE_LIMIT_EXCEEDED =
-        "Your per {0} rate limit has exceeded. You can retry after some time.";
+        "Please retry after one {0}, as you have reached the limit for OTP requests!";
     String INVALID_REQUEST_TIMEOUT = "Invalid request timeout value {0}.";
     String ERROR_USER_UPDATE_PASSWORD = "User is created but password couldn't be updated.";
     String ERROR_USER_MIGRATION_FAILED = "User migration failed.";

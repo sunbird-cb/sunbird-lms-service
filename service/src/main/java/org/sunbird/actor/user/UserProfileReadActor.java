@@ -44,9 +44,17 @@ public class UserProfileReadActor extends BaseActor {
       case "getUserByKey":
         getUserByKey(request);
         break;
+      case "getUserLoggedInDetails":
+        getUserLoggedInDetails(request);
+        break;
       default:
         onReceiveUnsupportedOperation();
     }
+  }
+
+  private void getUserLoggedInDetails(Request actorMessage) throws Exception {
+    Response response = profileReadService.getUserLoggedInDetails(actorMessage);
+    sender().tell(response, self());
   }
 
   private void getUserProfileV3(Request actorMessage) {

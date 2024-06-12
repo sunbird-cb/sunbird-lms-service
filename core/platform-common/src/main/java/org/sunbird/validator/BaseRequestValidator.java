@@ -317,4 +317,36 @@ public class BaseRequestValidator {
         ProjectUtil.formatMessage(responseCode.getErrorMessage(), field),
         ResponseCode.CLIENT_ERROR.getResponseCode());
   }
+
+  /**
+   * Validates a list of string values.
+   * If the list is null or empty, or if any of its elements is blank (empty or whitespace only),
+   * it throws a ProjectCommonException with the specified error code and message.
+   *
+   * @param values           The list of string values to validate.
+   * @param error            The ResponseCode indicating the type of error.
+   * @param errorMsgArgument An argument to be used in formatting the error message.
+   * @throws ProjectCommonException If the list is null or empty, or if any of its elements is blank.
+   */
+  public void validateParamList(List<String> values, ResponseCode error, String errorMsgArgument) {
+    // Check if the list is null or empty
+    if (values == null || values.isEmpty()) {
+      // Throw an exception with the specified error code and formatted error message
+      throw new ProjectCommonException(
+              error,
+              MessageFormat.format(error.getErrorMessage(), errorMsgArgument),
+              ResponseCode.CLIENT_ERROR.getResponseCode());
+    }
+    // Iterate through each string value in the list
+    for (String value : values) {
+      // Check if the value is blank (empty or whitespace only)
+      if (StringUtils.isBlank(value)) {
+        // Throw an exception with the specified error code and formatted error message
+        throw new ProjectCommonException(
+                error,
+                MessageFormat.format(error.getErrorMessage(), errorMsgArgument),
+                ResponseCode.CLIENT_ERROR.getResponseCode());
+      }
+    }
+  }
 }

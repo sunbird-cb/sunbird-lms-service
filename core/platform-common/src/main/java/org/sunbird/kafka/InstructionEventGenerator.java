@@ -104,4 +104,36 @@ public class InstructionEventGenerator {
     }
     return jsonMessage;
   }
+
+  public static void createFirstLoginDetailsEvent(String key, String topic, Map<String, Object> data) throws Exception {
+    String courseEnrolEvent = formEventData(data);
+    if (StringUtils.isBlank(courseEnrolEvent)) {
+      throw new ProjectCommonException(ResponseCode.valueOf("BE_JOB_REQUEST_EXCEPTION"), "Event is not generated properly.", ResponseCode.CLIENT_ERROR.getResponseCode());
+    }
+    if (StringUtils.isNotBlank(topic)) {
+      if (StringUtils.isNotBlank(key)) KafkaClient.send(key, courseEnrolEvent, topic);
+      else KafkaClient.send(courseEnrolEvent, topic);
+    } else {
+      throw new ProjectCommonException(ResponseCode.valueOf("BE_JOB_REQUEST_EXCEPTION"), "Invalid topic id.", ResponseCode.CLIENT_ERROR.getResponseCode());
+    }
+  }
+
+  private static String formEventData(Map<String, Object> data) {
+    Map<String, Object> eData = new HashMap<>();
+
+    if (MapUtils.isNotEmpty((Map) data.get("edata"))) {
+      eData.putAll((Map) data.get("edata"));
+    }
+
+    Map<String, Object> formattedData = new HashMap<>();
+    formattedData.put("edata", eData);
+
+    String jsonMessage = null;
+    try {
+      jsonMessage = mapper.writeValueAsString(formattedData);
+    } catch (Exception e) {
+      logger.error("Error creating JSON message: " + e.getMessage(), e);
+    }
+    return jsonMessage;
+  }
 }

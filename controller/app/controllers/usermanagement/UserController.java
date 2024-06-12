@@ -485,4 +485,11 @@ public class UserController extends BaseController {
         true,
         httpRequest);
   }
+
+    public CompletionStage<Result> getUserLoggedInDetails(Http.Request httpRequest) {
+        return handleGetUserProfileV3(
+                ActorOperations.GET_USER_LOGIN_V1.getValue(),
+                null,
+                httpRequest);
+    }
 }

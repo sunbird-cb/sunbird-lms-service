@@ -9,6 +9,9 @@ import org.sunbird.datasecurity.DataMaskingService;
 import org.sunbird.datasecurity.DecryptionService;
 import org.sunbird.datasecurity.EncryptionService;
 import org.sunbird.datasecurity.impl.ServiceFactory;
+import org.sunbird.exception.ProjectCommonException;
+import org.sunbird.exception.ResponseCode;
+import org.sunbird.exception.ResponseMessage;
 import org.sunbird.keys.JsonKey;
 import org.sunbird.logging.LoggerUtil;
 
@@ -91,7 +94,22 @@ public final class UserUtility {
     // Encrypt user basic info
     for (String key : userKeyToEncrypt) {
       if (filterMap.containsKey(key)) {
-        filterMap.put(key, service.encryptData((String) filterMap.get(key), null));
+        Object filterValue = filterMap.get(key);
+        if (filterValue instanceof String) {
+          filterMap.put(key, service.encryptData((String) filterValue, null));
+        } else if (filterValue instanceof List) {
+          List<String> valueList = (List<String>) filterValue;
+          List<String> encValueList = new ArrayList();
+          for (String value: valueList) {
+            encValueList.add(service.encryptData(value, null));
+          }
+          filterMap.put(key, encValueList);
+        } else {
+          throw new ProjectCommonException(
+            ResponseCode.invalidParameterValue,
+            String.format(ResponseMessage.Message.INVALID_PARAMETER_VALUE, filterValue, JsonKey.FILTERS + "." + key.toUpperCase()),
+            ResponseCode.invalidParameterValue.getResponseCode());
+        }
       }
     }
     return filterMap;

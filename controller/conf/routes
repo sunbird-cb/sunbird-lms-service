@@ -27,6 +27,7 @@ GET  	/v3/user/read/:uid				        @controllers.usermanagement.UserController.g
 GET  	/v4/user/read/:uid				        @controllers.usermanagement.UserController.getUserByIdV4(uid:String, request: play.mvc.Http.Request)
 GET  	/v5/user/read/:uid				        @controllers.usermanagement.UserController.getUserByIdV5(uid:String, request: play.mvc.Http.Request)
 GET     /private/user/v1/read/:externalId       @controllers.usermanagement.UserController.getUserByIdV3(externalId:String, request: play.mvc.Http.Request)
+GET  	/v1/user/login		                    @controllers.usermanagement.UserController.getUserLoggedInDetails(request: play.mvc.Http.Request)
 
 GET     /v1/user/managed/:lua_uuid              @controllers.usermanagement.UserController.getManagedUsers(lua_uuid:String, request: play.mvc.Http.Request)
 POST    /v1/user/getuser                        @controllers.usermanagement.UserController.getUserByLoginId(request: play.mvc.Http.Request)
@@ -72,6 +73,8 @@ POST    /v1/otp/generate                        @controllers.otp.OtpController.g
 POST    /v1/otp/verify                          @controllers.otp.OtpController.verifyOTP(request: play.mvc.Http.Request)
 POST    /v2/otp/generate                        @controllers.otp.OtpController.generateOTP(request: play.mvc.Http.Request)
 POST    /v2/otp/verify                          @controllers.otp.OtpController.verifyOTP(request: play.mvc.Http.Request)
+POST    /v3/otp/generate                        @controllers.otp.OtpController.generateOTPv3(request: play.mvc.Http.Request)
+POST    /v3/otp/verify                          @controllers.otp.OtpController.verifyOTPv3(request: play.mvc.Http.Request)
 
 #Tenant Migration
 PATCH   /private/user/v1/migrate  	            @controllers.tenantmigration.TenantMigrationController.userTenantMigrate(request: play.mvc.Http.Request)

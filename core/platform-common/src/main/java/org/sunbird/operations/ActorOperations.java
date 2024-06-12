@@ -20,6 +20,7 @@ public enum ActorOperations {
 
   GET_USER_PROFILE_V3("getUserProfileV3", "USRRED"),
   GET_USER_PROFILE_V4("getUserProfileV4", "USRRED"),
+  GET_USER_LOGIN_V1("getUserLoggedInDetails", "USRRED"),
   GET_USER_PROFILE_V5("getUserProfileV5", "USRRED"),
 
   UPDATE_USER_INFO_ELASTIC("updateUserInfoToElastic", "UBKGUPD"),
@@ -72,6 +73,8 @@ public enum ActorOperations {
   GENERATE_OTP("generateOTP", "OTPCRT"),
   VERIFY_OTP("verifyOTP", "OTPVERFY"),
   SEND_OTP("sendOTP", "OTPNOTI"),
+  GENERATE_OTP_V3("generateOTPV3", "OTPCRT3"),
+  VERIFY_OTP_V3("verifyOTPV3", "OTPVERFY3"),
 
   GET_USER_TYPES("getUserTypes", "UTYPRED"),
 
