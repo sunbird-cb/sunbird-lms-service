@@ -19,11 +19,11 @@ public class ExtendedUserProfileServiceImpl implements ExtendedUserProfileServic
     public void validateProfile(Request userRequest) {
         if (userRequest!=null && userRequest.get(JsonKey.PROFILE_DETAILS)!=null) {
             try{
-                Map<String,Object> profileDetails = (Map<String, Object>) userRequest.get(JsonKey.PROFILE_DETAILS);
-                if (profileDetails.get(JsonKey.PERSONAL_DETAILS)!=null){
-                    Map<String,Object> personalDetails = (Map<String, Object>) profileDetails.get(JsonKey.PERSONAL_DETAILS);
-                    if(personalDetails.get(JsonKey.FIRST_NAME)!=null){
-                        personalDetails.put(JsonKey.FIRST_NAME,formatFirstName((String) profileDetails.get(JsonKey.FIRST_NAME)));
+                Map<String, Object> profileDetails = (Map<String, Object>) userRequest.get(JsonKey.PROFILE_DETAILS);
+                if (profileDetails.get(JsonKey.PERSONAL_DETAILS) != null) {
+                    Map<String, Object> personalDetails = (Map<String, Object>) profileDetails.get(JsonKey.PERSONAL_DETAILS);
+                    if (personalDetails.get(JsonKey.FIRST_NAME) != null) {
+                        personalDetails.put(JsonKey.FIRST_NAME, formatFirstName((String) profileDetails.get(JsonKey.FIRST_NAME)));
                     }
                 }
                 String userProfile = mapper.writeValueAsString(userRequest.getRequest().get(JsonKey.PROFILE_DETAILS));
