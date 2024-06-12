@@ -62,6 +62,7 @@ public class UserRequestValidator extends BaseRequestValidator {
     validateUserType(userRequest.getRequest(), null, userRequest.getRequestContext());
     phoneValidation(userRequest);
     validatePassword((String) userRequest.getRequest().get(JsonKey.PASSWORD));
+    validateFirstName(userRequest);
   }
 
   public static boolean isGoodPassword(String password) {
@@ -78,6 +79,20 @@ public class UserRequestValidator extends BaseRequestValidator {
             ERROR_CODE);
       }
     }
+  }
+
+  private void validateFirstName(Request userRequest) {
+   String firstName = (String) userRequest.getRequest().get(JsonKey.FIRST_NAME);
+    String[] words = firstName.split("\\s+");
+    StringBuilder modifiedFirstName = new StringBuilder();
+    for (String word : words) {
+      if (word.length() > 0) {
+        modifiedFirstName.append(Character.toUpperCase(word.charAt(0)))
+                .append(word.substring(1).toLowerCase())
+                .append(" ");
+      }
+    }
+    userRequest.getRequest().put(JsonKey.FIRST_NAME,modifiedFirstName);
   }
 
   /**
