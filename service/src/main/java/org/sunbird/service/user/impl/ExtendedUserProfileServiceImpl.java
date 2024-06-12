@@ -19,6 +19,13 @@ public class ExtendedUserProfileServiceImpl implements ExtendedUserProfileServic
     public void validateProfile(Request userRequest) {
         if (userRequest!=null && userRequest.get(JsonKey.PROFILE_DETAILS)!=null) {
             try{
+                Map<String, Object> profileDetails = (Map<String, Object>) userRequest.get(JsonKey.PROFILE_DETAILS);
+                if (profileDetails.get(JsonKey.PERSONAL_DETAILS) != null) {
+                    Map<String, Object> personalDetails = (Map<String, Object>) profileDetails.get(JsonKey.PERSONAL_DETAILS);
+                    if (personalDetails.get(JsonKey.FIRST_NAME) != null) {
+                        personalDetails.put(JsonKey.FIRST_NAME, formatFirstName((String) profileDetails.get(JsonKey.FIRST_NAME)));
+                    }
+                }
                 String userProfile = mapper.writeValueAsString(userRequest.getRequest().get(JsonKey.PROFILE_DETAILS));
                 JSONObject obj = new JSONObject(userProfile);
                 UserExtendedProfileSchemaValidator.validate(SCHEMA, obj);
@@ -32,5 +39,18 @@ public class ExtendedUserProfileServiceImpl implements ExtendedUserProfileServic
                         ResponseCode.extendUserProfileNotLoaded.getResponseCode());
             }
         }
+    }
+
+    private String formatFirstName(String firstName) {
+        String[] words = firstName.split("\\s+");
+        StringBuilder modifiedFirstName = new StringBuilder();
+        for (String word : words) {
+            if (word.length() > 0) {
+                modifiedFirstName.append(Character.toUpperCase(word.charAt(0)))
+                        .append(word.substring(1).toLowerCase())
+                        .append(" ");
+            }
+        }
+        return modifiedFirstName.toString();
     }
 }

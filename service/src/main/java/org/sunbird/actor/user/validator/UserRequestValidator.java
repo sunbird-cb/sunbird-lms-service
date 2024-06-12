@@ -62,6 +62,7 @@ public class UserRequestValidator extends BaseRequestValidator {
     validateUserType(userRequest.getRequest(), null, userRequest.getRequestContext());
     phoneValidation(userRequest);
     validatePassword((String) userRequest.getRequest().get(JsonKey.PASSWORD));
+    formatFirstName(userRequest);
   }
 
   public static boolean isGoodPassword(String password) {
@@ -78,6 +79,20 @@ public class UserRequestValidator extends BaseRequestValidator {
             ERROR_CODE);
       }
     }
+  }
+
+  private void formatFirstName(Request userRequest) {
+   String firstName = (String) userRequest.getRequest().get(JsonKey.FIRST_NAME);
+    String[] words = firstName.split("\\s+");
+    StringBuilder modifiedFirstName = new StringBuilder();
+    for (String word : words) {
+      if (word.length() > 0) {
+        modifiedFirstName.append(Character.toUpperCase(word.charAt(0)))
+                .append(word.substring(1).toLowerCase())
+                .append(" ");
+      }
+    }
+    userRequest.getRequest().put(JsonKey.FIRST_NAME,modifiedFirstName);
   }
 
   /**
@@ -437,6 +452,9 @@ public class UserRequestValidator extends BaseRequestValidator {
           ResponseCode.mandatoryParamsMissing,
           MessageFormat.format(
               ResponseCode.mandatoryParamsMissing.getErrorMessage(), JsonKey.FIRST_NAME));
+    } else if (userRequest.getRequest().containsKey(JsonKey.FIRST_NAME)
+            && (StringUtils.isNotBlank((String) userRequest.getRequest().get(JsonKey.FIRST_NAME)))){
+      formatFirstName(userRequest);
     }
 
     if ((userRequest.getRequest().containsKey(JsonKey.EMAIL)
