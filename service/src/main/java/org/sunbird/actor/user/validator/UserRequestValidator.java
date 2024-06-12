@@ -62,7 +62,7 @@ public class UserRequestValidator extends BaseRequestValidator {
     validateUserType(userRequest.getRequest(), null, userRequest.getRequestContext());
     phoneValidation(userRequest);
     validatePassword((String) userRequest.getRequest().get(JsonKey.PASSWORD));
-    validateFirstName(userRequest);
+    formatFirstName(userRequest);
   }
 
   public static boolean isGoodPassword(String password) {
@@ -81,7 +81,7 @@ public class UserRequestValidator extends BaseRequestValidator {
     }
   }
 
-  private void validateFirstName(Request userRequest) {
+  private void formatFirstName(Request userRequest) {
    String firstName = (String) userRequest.getRequest().get(JsonKey.FIRST_NAME);
     String[] words = firstName.split("\\s+");
     StringBuilder modifiedFirstName = new StringBuilder();
