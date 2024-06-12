@@ -643,8 +643,6 @@ public final class JsonKey {
   public static final String LAST_LOGIN = "last_login";
   public static final String FIRST_LOGIN = "first_login";
   public static final String EDATA = "edata";
-<<<<<<< cbrelease-4.8.5_firstNameValidation
-
   public static final String SELF_REGISTRATION = "self_registration";
   public static final String CREATEDBY = "createdby";
   public static final String CONTEXT_TYPE = "contextType";
@@ -653,16 +651,5 @@ public final class JsonKey {
   public static final String OTP_VALIDATION_SECRET_KEY = "otpValidationSecretKey";
   public static final String OTP_EXPIRATION_TIME_TOKEN = "otpExpirationTimeToken";
   public static final String PERSONAL_DETAILS = "personalDetails";
-
-=======
->>>>>>> 4.8.12-firstNameFix
-
-  public static final String SELF_REGISTRATION = "self_registration";
-  public static final String CREATEDBY = "createdby";
-  public static final String CONTEXT_TYPE = "contextType";
-  public static final String CONTEXT_ATTRIBUTES = "contextAttributes";
-  public static final String CONTEXT_TOKEN = "contextToken";
-  public static final String OTP_VALIDATION_SECRET_KEY = "otpValidationSecretKey";
-  public static final String OTP_EXPIRATION_TIME_TOKEN = "otpExpirationTimeToken";
   private JsonKey() {}
 }
