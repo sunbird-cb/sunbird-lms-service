@@ -452,6 +452,9 @@ public class UserRequestValidator extends BaseRequestValidator {
           ResponseCode.mandatoryParamsMissing,
           MessageFormat.format(
               ResponseCode.mandatoryParamsMissing.getErrorMessage(), JsonKey.FIRST_NAME));
+    } else if (userRequest.getRequest().containsKey(JsonKey.FIRST_NAME)
+            && (StringUtils.isNotBlank((String) userRequest.getRequest().get(JsonKey.FIRST_NAME)))){
+      formatFirstName(userRequest);
     }
 
     if ((userRequest.getRequest().containsKey(JsonKey.EMAIL)
