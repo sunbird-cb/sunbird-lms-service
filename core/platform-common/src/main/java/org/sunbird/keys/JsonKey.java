@@ -335,7 +335,7 @@ public final class JsonKey {
   public static final String DEFAULT_FRAMEWORK = "defaultFramework";
   public static final String EXTERNAL_ID_PROVIDER = "externalIdProvider";
   public static final String SUNBIRD_INSTALLATION_DISPLAY_NAME =
-      "sunbird_installation_display_name_for_sms";
+          "sunbird_installation_display_name_for_sms";
   public static final String USR_EXT_IDNT_TABLE = "usr_external_identity";
   public static final String RESPONSE_CODE = "responseCode";
   public static final String OK = "ok";
@@ -345,12 +345,12 @@ public final class JsonKey {
   public static final String SUNBIRD_DEFAULT_WELCOME_MSG = "sunbird_default_welcome_sms";
   public static final String RECIPIENT_SEARCH_QUERY = "recipientSearchQuery";
   public static final String SUNBIRD_EMAIL_MAX_RECEPIENT_LIMIT =
-      "sunbird_email_max_recipients_limit";
+          "sunbird_email_max_recipients_limit";
   public static final String ORIGINAL_EXTERNAL_ID = "originalExternalId";
   public static final String ORIGINAL_ID_TYPE = "originalIdType";
   public static final String ORIGINAL_PROVIDER = "originalProvider";
   public static final String SUNBIRD_CASSANDRA_CONSISTENCY_LEVEL =
-      "sunbird_cassandra_consistency_level";
+          "sunbird_cassandra_consistency_level";
   public static final String VERSION_2 = "v2";
   public static final String CUSTODIAN_ORG_CHANNEL = "custodianOrgChannel";
   public static final String CUSTODIAN_ORG_ID = "custodianOrgId";
@@ -369,7 +369,7 @@ public final class JsonKey {
   public static final String BATCH_END_DATE = "batchEndDate";
   public static final String BATCH_NAME = "batchName";
   public static final String SUNBIRD_API_REQUEST_LOWER_CASE_FIELDS =
-      "sunbird_api_request_lower_case_fields";
+          "sunbird_api_request_lower_case_fields";
   public static final String ATTRIBUTE = "attribute";
   public static final String ERRORS = "errors";
   public static final String ROLE_LIST = "roleList";
@@ -407,7 +407,7 @@ public final class JsonKey {
   public static final String SORTBY = "sortBy";
   public static final String TERM = "term";
   public static final String SUNBIRD_KEYCLOAK_USER_FEDERATION_PROVIDER_ID =
-      "sunbird_keycloak_user_federation_provider_id";
+          "sunbird_keycloak_user_federation_provider_id";
   public static final String DEVICE_ID = "did";
   public static final String SUNBIRD_GZIP_ENABLE = "sunbird_gzip_enable";
   public static final String SUNBIRD_SYNC_READ_WAIT_TIME = "sunbird_sync_read_wait_time";
@@ -442,7 +442,7 @@ public final class JsonKey {
   public static final String X_AUTHENTICATED_USER_TOKEN = "x-authenticated-user-token";
   public static final String X_SOURCE_USER_TOKEN = "x-source-user-token";
   public static final String SUNBIRD_SUBDOMAIN_KEYCLOAK_BASE_URL =
-      "sunbird_subdomain_keycloak_base_url";
+          "sunbird_subdomain_keycloak_base_url";
   public static final String ACTION = "action";
   public static final String ITERATION = "iteration";
   public static final String TELEMETRY_TARGET_USER_MERGE_TYPE = "MergeUserCoursesAndCert";
@@ -489,7 +489,7 @@ public final class JsonKey {
   public static final String SUB = "sub";
   public static final String DOT_SEPARATOR = ".";
   public static final List<String> USER_UNAUTH_STATES =
-      Arrays.asList(JsonKey.UNAUTHORIZED, JsonKey.ANONYMOUS);
+          Arrays.asList(JsonKey.UNAUTHORIZED, JsonKey.ANONYMOUS);
   public static final String EKSTEP_SIGNING_SIGN_PAYLOAD = "ekstep.signing.sign.payload";
   public static final String EKSTEP_SIGNING_SIGN_PAYLOAD_VER = "ekstep.signing.sign.payload.ver";
   public static final String ADMINUTIL_BASE_URL = "adminutil_base_url";
@@ -503,7 +503,7 @@ public final class JsonKey {
   public static final String DECLARED_SCHOOL_NAME = "declared-school-name";
   public static final String GOOGLE_CAPTCHA_PRIVATE_KEY = "google_captcha_private_key";
   public static final String GOOGLE_CAPTCHA_MOBILE_PRIVATE_KEY =
-      "google_captcha_mobile_private_key";
+          "google_captcha_mobile_private_key";
   public static final String MOBILE_APP = "app";
   public static final String CAPTCHA_RESPONSE = "captchaResponse";
   public static final String ENABLE_CAPTCHA = "enable_captcha";
@@ -606,7 +606,7 @@ public final class JsonKey {
   public static final String OTP_CONTACT_UPDATE_TEMPLATE_EMAIL = "otpContactUpdateTemplateEmail";
   public static final String OTP_CONTACT_UPDATE_TEMPLATE_SMS = "otpContactUpdateTemplateSms";
   public static final String CONTACT_DETAILS_UPDATE_VERIFICATION_SUBJECT =
-      "OTP to edit Diksha Profile";
+          "OTP to edit Diksha Profile";
   public static final String X_Source = "x-source";
   public static final String IDS = "ids";
   public static final String NOTIFICATIONS = "notifications";
@@ -615,10 +615,10 @@ public final class JsonKey {
   public static final String NOTIFICATION_SERVICE_BASE_URL = "notification_service_base_url";
   public static final String NOTIFICATION_SERVICE_V2_SEND_URL = "notification_service_v2_send_url";
   public static final String NOTIFICATION_SERVICE_V1_UPDATE_URL =
-      "notification_service_v1_update_url";
+          "notification_service_v1_update_url";
   public static final String NOTIFICATION_SERVICE_V1_READ_URL = "notification_service_v1_read_url";
   public static final String NOTIFICATION_SERVICE_V1_DELETE_URL =
-      "notification_service_v1_delete_url";
+          "notification_service_v1_delete_url";
   public static final String CHANNEL_REGISTRATION_DISABLED = "channel_registration_disabled";
   public static final String USER_CONSENT_TEXT = "user consent";
   public static final Object COUNTRY_CODE_TEXT = "country code";
@@ -637,6 +637,20 @@ public final class JsonKey {
   public static final String FORCE_MIGRATION = "forceMigration";
   public static final String SOFT_DELETE_PREVIOUS_ORG = "softDeleteOldOrg";
   public static final String OTP_EXPIRATION_TIME = "otpExpiryTime";
+  public static final String USER_READ_API_V2_MANDATORY_FIELDS = "user_read_api_v2_mandatory_fields";
+  public static final String USER_READ_API_V2_NON_MANDATORY_FIELDS = "user_read_api_v2_non_mandatory_fields";
+  public static final String PROFILE_UPDATE_COMPLETION = "profileUpdateCompletion";
+  public static final String LAST_LOGIN = "last_login";
+  public static final String FIRST_LOGIN = "first_login";
+  public static final String EDATA = "edata";
+
+  public static final String SELF_REGISTRATION = "self_registration";
+  public static final String CREATEDBY = "createdby";
+  public static final String CONTEXT_TYPE = "contextType";
+  public static final String CONTEXT_ATTRIBUTES = "contextAttributes";
+  public static final String CONTEXT_TOKEN = "contextToken";
+  public static final String OTP_VALIDATION_SECRET_KEY = "otpValidationSecretKey";
+  public static final String OTP_EXPIRATION_TIME_TOKEN = "otpExpirationTimeToken";
   public static final String PERSONAL_DETAILS = "personalDetails";
 
 
