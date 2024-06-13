@@ -25,7 +25,7 @@ public class ExtendedUserProfileServiceImpl implements ExtendedUserProfileServic
                     Map<String, Object> personalDetails = (Map<String, Object>) profileDetails.get(JsonKey.PERSONAL_DETAILS);
                     if (StringUtils.isNotBlank((String) personalDetails.get(JsonKey.FIRST_NAME)) || StringUtils.isNotBlank((String) personalDetails.get(JsonKey.FIRST_NAME_LOWER_CASE))) {
                         String firstName = (String) personalDetails.get(JsonKey.FIRST_NAME);
-                        if (firstName == null) {
+                        if (StringUtils.isBlank(firstName)) {
                             firstName = (String) personalDetails.get(JsonKey.FIRST_NAME_LOWER_CASE);
                         }
                         personalDetails.put(JsonKey.FIRST_NAME_LOWER_CASE, formatFirstName(firstName));
