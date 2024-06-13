@@ -1,6 +1,7 @@
 package org.sunbird.service.user.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import net.logstash.logback.encoder.org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
 import org.sunbird.exception.ProjectCommonException;
 import org.sunbird.exception.ResponseCode;
@@ -22,7 +23,7 @@ public class ExtendedUserProfileServiceImpl implements ExtendedUserProfileServic
                 Map<String, Object> profileDetails = (Map<String, Object>) userRequest.get(JsonKey.PROFILE_DETAILS);
                 if (profileDetails.get(JsonKey.PERSONAL_DETAILS) != null) {
                     Map<String, Object> personalDetails = (Map<String, Object>) profileDetails.get(JsonKey.PERSONAL_DETAILS);
-                    if (personalDetails.get(JsonKey.FIRST_NAME) != null || personalDetails.get(JsonKey.FIRST_NAME_LOWER_CASE) != null) {
+                    if (StringUtils.isNotBlank((String) personalDetails.get(JsonKey.FIRST_NAME)) || StringUtils.isNotBlank((String) personalDetails.get(JsonKey.FIRST_NAME_LOWER_CASE))) {
                         String firstName = (String) personalDetails.get(JsonKey.FIRST_NAME);
                         if (firstName == null) {
                             firstName = (String) personalDetails.get(JsonKey.FIRST_NAME_LOWER_CASE);
