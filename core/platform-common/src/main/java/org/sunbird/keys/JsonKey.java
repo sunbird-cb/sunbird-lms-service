@@ -651,5 +651,7 @@ public final class JsonKey {
   public static final String OTP_VALIDATION_SECRET_KEY = "otpValidationSecretKey";
   public static final String OTP_EXPIRATION_TIME_TOKEN = "otpExpirationTimeToken";
   public static final String PERSONAL_DETAILS = "personalDetails";
+  public static final String FIRST_NAME_LOWER_CASE = "firstname";
+
   private JsonKey() {}
 }
