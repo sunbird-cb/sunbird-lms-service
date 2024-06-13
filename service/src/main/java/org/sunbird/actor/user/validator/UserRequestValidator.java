@@ -92,7 +92,7 @@ public class UserRequestValidator extends BaseRequestValidator {
                 .append(" ");
       }
     }
-    userRequest.getRequest().put(JsonKey.FIRST_NAME,modifiedFirstName);
+    userRequest.getRequest().put(JsonKey.FIRST_NAME,modifiedFirstName.toString());
   }
 
   /**
