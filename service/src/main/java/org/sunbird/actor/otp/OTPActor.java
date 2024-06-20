@@ -176,7 +176,7 @@ public class OTPActor extends BaseActor {
 
   private void handleMismatchOtp(
       String type, String key, Map<String, Object> otpDetails, RequestContext context) {
-    int remainingCount = getRemainingAttemptedCount(otpDetails);
+    int remainingCount = getRemainingAttemptedCount(otpDetails)-1;
     logger.info(
         context,
         "OTPActor:handleMismatchOtp: Key = "
