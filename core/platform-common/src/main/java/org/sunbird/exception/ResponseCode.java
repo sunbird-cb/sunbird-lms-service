@@ -165,6 +165,8 @@ public enum ResponseCode {
   invalidConsentStatus(
       ResponseMessage.Key.INVALID_CONSENT_STATUS, ResponseMessage.Message.INVALID_CONSENT_STATUS),
   serverError(ResponseMessage.Key.SERVER_ERROR, ResponseMessage.Message.SERVER_ERROR),
+  errorParamExistsFormatted(
+          ResponseMessage.Key.ERROR_PARAM_EXISTS, ResponseMessage.Message.ERROR_PARAM_EXISTS_FORMATTED),
   OK(200),
   SUCCESS(200),
   CLIENT_ERROR(400),

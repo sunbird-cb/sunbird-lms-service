@@ -67,14 +67,14 @@ public class UserLookUpServiceImpl implements UserLookupService {
         if (opType.equalsIgnoreCase(JsonKey.CREATE)) {
           ProjectCommonException.throwClientErrorException(
               ResponseCode.errorParamExists,
-              MessageFormat.format(ResponseCode.errorParamExists.getErrorMessage(), JsonKey.EMAIL));
+              MessageFormat.format(ResponseCode.errorParamExistsFormatted.getErrorMessage(), JsonKey.EMAIL_CAPS));
         } else {
           Map<String, Object> userMap = userMapList.get(0);
           if (!(((String) userMap.get(JsonKey.USER_ID)).equalsIgnoreCase(user.getId()))) {
             ProjectCommonException.throwClientErrorException(
                 ResponseCode.errorParamExists,
                 MessageFormat.format(
-                    ResponseCode.errorParamExists.getErrorMessage(), JsonKey.EMAIL));
+                    ResponseCode.errorParamExistsFormatted.getErrorMessage(), JsonKey.EMAIL_CAPS));
           }
         }
       }
@@ -105,14 +105,14 @@ public class UserLookUpServiceImpl implements UserLookupService {
         if (opType.equalsIgnoreCase(JsonKey.CREATE)) {
           ProjectCommonException.throwClientErrorException(
               ResponseCode.errorParamExists,
-              MessageFormat.format(ResponseCode.errorParamExists.getErrorMessage(), JsonKey.PHONE));
+              MessageFormat.format(ResponseCode.errorParamExistsFormatted.getErrorMessage(), JsonKey.PHONE_CAPS));
         } else {
           Map<String, Object> userMap = userMapList.get(0);
           if (!(((String) userMap.get(JsonKey.USER_ID)).equalsIgnoreCase(user.getId()))) {
             ProjectCommonException.throwClientErrorException(
                 ResponseCode.errorParamExists,
                 MessageFormat.format(
-                    ResponseCode.errorParamExists.getErrorMessage(), JsonKey.PHONE));
+                    ResponseCode.errorParamExistsFormatted.getErrorMessage(), JsonKey.PHONE_CAPS));
           }
         }
       }

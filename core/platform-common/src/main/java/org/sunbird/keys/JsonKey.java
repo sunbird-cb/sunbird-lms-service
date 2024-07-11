@@ -643,7 +643,6 @@ public final class JsonKey {
   public static final String LAST_LOGIN = "last_login";
   public static final String FIRST_LOGIN = "first_login";
   public static final String EDATA = "edata";
-
   public static final String SELF_REGISTRATION = "self_registration";
   public static final String CREATEDBY = "createdby";
   public static final String CONTEXT_TYPE = "contextType";
@@ -651,5 +650,10 @@ public final class JsonKey {
   public static final String CONTEXT_TOKEN = "contextToken";
   public static final String OTP_VALIDATION_SECRET_KEY = "otpValidationSecretKey";
   public static final String OTP_EXPIRATION_TIME_TOKEN = "otpExpirationTimeToken";
+  public static final String PERSONAL_DETAILS = "personalDetails";
+  public static final String FIRST_NAME_LOWER_CASE = "firstname";
+  public static final String PHONE_CAPS = "Phone";
+  public static final String EMAIL_CAPS = "Email";
+
   private JsonKey() {}
 }
