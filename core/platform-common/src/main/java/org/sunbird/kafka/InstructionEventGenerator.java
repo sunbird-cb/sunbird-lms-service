@@ -136,4 +136,16 @@ public class InstructionEventGenerator {
     }
     return jsonMessage;
   }
+
+  public static void mentorshipUserUpdateEvent(String key, String topic, String data) throws Exception {
+    if (StringUtils.isBlank(data)) {
+      throw new ProjectCommonException(ResponseCode.valueOf("BE_JOB_REQUEST_EXCEPTION"), "mentorship user update Event is not generated properly.", ResponseCode.CLIENT_ERROR.getResponseCode());
+    }
+    if (StringUtils.isNotBlank(topic)) {
+      if (StringUtils.isNotBlank(key)) KafkaClient.send(key, data, topic);
+      else KafkaClient.send(data, topic);
+    } else {
+      throw new ProjectCommonException(ResponseCode.valueOf("BE_JOB_REQUEST_EXCEPTION"), "Invalid topic id.", ResponseCode.CLIENT_ERROR.getResponseCode());
+    }
+  }
 }
