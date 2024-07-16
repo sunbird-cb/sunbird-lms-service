@@ -137,13 +137,19 @@ public class InstructionEventGenerator {
     return jsonMessage;
   }
 
-  public static void mentorshipUserUpdateEvent(String key, String topic, String data) throws Exception {
-    if (StringUtils.isBlank(data)) {
+  public static void mentorshipUserUpdateEvent(String key, String topic, Map<String, String> data) throws Exception {
+    String jsonMessage = null;
+    try {
+      jsonMessage = mapper.writeValueAsString(data);
+    } catch (Exception e) {
+      logger.error("Error creating JSON message: " + e.getMessage(), e);
+    }
+    if (StringUtils.isBlank(jsonMessage)) {
       throw new ProjectCommonException(ResponseCode.valueOf("BE_JOB_REQUEST_EXCEPTION"), "mentorship user update Event is not generated properly.", ResponseCode.CLIENT_ERROR.getResponseCode());
     }
     if (StringUtils.isNotBlank(topic)) {
-      if (StringUtils.isNotBlank(key)) KafkaClient.send(key, data, topic);
-      else KafkaClient.send(data, topic);
+      if (StringUtils.isNotBlank(key)) KafkaClient.send(key, jsonMessage, topic);
+      else KafkaClient.send(jsonMessage, topic);
     } else {
       throw new ProjectCommonException(ResponseCode.valueOf("BE_JOB_REQUEST_EXCEPTION"), "Invalid topic id.", ResponseCode.CLIENT_ERROR.getResponseCode());
     }

@@ -296,7 +296,9 @@ public class UserUpdateActor extends UserBaseActor {
       saveUserDetailsToEs(completeUserDetails, actorMessage.getRequestContext());
       String topic = ProjectUtil.getConfigValue("kafka_mentorship_user_update_topic");
       try {
-        InstructionEventGenerator.mentorshipUserUpdateEvent("", topic, user.getUserId());
+        HashMap<String,String> userDetails = new HashMap<>();
+        userDetails.put(JsonKey.USER_ID,user.getUserId());
+        InstructionEventGenerator.mentorshipUserUpdateEvent("", topic, userDetails);
         logger.info("kafka_mentorship_user_update_topic event pushed");
       }catch (Exception e){
         logger.info("error while generating mentorship event");
