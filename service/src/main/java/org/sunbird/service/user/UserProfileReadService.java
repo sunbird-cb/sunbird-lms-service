@@ -145,6 +145,19 @@ public class UserProfileReadService {
     result.put(JsonKey.IDENTIFIER, userId);
 
     mapUserRoles(result);
+    if(CollectionUtils.isNotEmpty((Collection) result.get("roles"))){
+      List<String> mentoringRoles = new ArrayList<>();
+      List<String> roles = (List<String>) result.get("roles");
+      List<String> mentorRoles = List.of(ProjectUtil.getConfigValue(JsonKey.MENTORING_ROLES).split(","));
+      for (String element : roles) {
+        if (mentorRoles.contains(element)) {
+          mentoringRoles.add(element);
+        }
+      }
+      if (!mentorRoles.isEmpty()){
+        result.put("mentoring",mentoringRoles);
+      }
+    }
 
     // Record the start time for measuring the execution time.
     long startTime = System.currentTimeMillis();
