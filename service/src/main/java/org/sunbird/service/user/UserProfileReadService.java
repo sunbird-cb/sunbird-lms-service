@@ -145,9 +145,9 @@ public class UserProfileReadService {
     result.put(JsonKey.IDENTIFIER, userId);
 
     mapUserRoles(result);
-    if(CollectionUtils.isNotEmpty((Collection) result.get("roles"))){
+    if(result.containsKey(JsonKey.ROLES) && CollectionUtils.isNotEmpty((Collection) result.get(JsonKey.ROLES))){
       List<String> mentoringRoles = new ArrayList<>();
-      List<String> roles = (List<String>) result.get("roles");
+      List<String> roles = (List<String>) result.get(JsonKey.ROLES);
       List<String> mentorRoles = List.of(ProjectUtil.getConfigValue(JsonKey.MENTORING_ROLES).split(","));
       for (String element : roles) {
         if (mentorRoles.contains(element)) {
