@@ -147,14 +147,30 @@ public class UserProfileReadService {
     mapUserRoles(result);
     if(result.containsKey(JsonKey.ROLES) && CollectionUtils.isNotEmpty((Collection) result.get(JsonKey.ROLES))){
       List<String> mentoringRoles = new ArrayList<>();
-      List<String> roles = (List<String>) result.get(JsonKey.ROLES);
+      List<String> roles = new ArrayList<>();
+      if (result.get(JsonKey.ROLES) instanceof List) {
+        List<?> list = (List<?>) result.get(JsonKey.ROLES);
+
+        if (!list.isEmpty() && list.get(0) instanceof HashMap) {
+          for (Object element : list) {
+            HashMap<?, ?> hashmap = (HashMap<?, ?>) element;
+            if (hashmap.containsKey("role") && hashmap.get("role") instanceof String) {
+              roles.add((String) hashmap.get("role"));
+            }
+          }
+        } else if (!list.isEmpty() && list.get(0) instanceof String) {
+          for (Object element : list) {
+            roles.add((String) element);
+          }
+        }
+      }
       List<String> mentorRoles = List.of(ProjectUtil.getConfigValue(JsonKey.MENTORING_ROLES).split(","));
       for (String element : roles) {
         if (mentorRoles.contains(element)) {
           mentoringRoles.add(element);
         }
       }
-      if (!mentorRoles.isEmpty()){
+      if (!mentoringRoles.isEmpty()){
         Map<String, Object> mentorObj = new HashMap<>();
         mentorObj.put(JsonKey.ROLE,mentoringRoles);
         result.put(JsonKey.MENTORING,mentorObj);
