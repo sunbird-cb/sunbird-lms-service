@@ -22,6 +22,7 @@ import org.sunbird.dao.user.impl.UserOrgDaoImpl;
 import org.sunbird.dao.user.impl.UserSelfDeclarationDaoImpl;
 import org.sunbird.exception.ProjectCommonException;
 import org.sunbird.exception.ResponseCode;
+import org.sunbird.kafka.InstructionEventGenerator;
 import org.sunbird.keys.JsonKey;
 import org.sunbird.model.location.Location;
 import org.sunbird.model.user.User;
@@ -293,6 +294,15 @@ public class UserUpdateActor extends UserBaseActor {
       Map<String, Object> completeUserDetails = new HashMap<>(userDbRecord);
       completeUserDetails.putAll(requestMap);
       saveUserDetailsToEs(completeUserDetails, actorMessage.getRequestContext());
+      String topic = ProjectUtil.getConfigValue("kafka_mentorship_user_update_topic");
+      try {
+        HashMap<String,String> userDetails = new HashMap<>();
+        userDetails.put(JsonKey.USER_ID,user.getUserId());
+        InstructionEventGenerator.mentorshipUserUpdateEvent("", topic, userDetails);
+        logger.info("kafka_mentorship_user_update_topic event pushed");
+      }catch (Exception e){
+        logger.info("error while generating mentorship event");
+      }
     }
     generateUserTelemetry(
         userMap, actorMessage, (String) userMap.get(JsonKey.USER_ID), JsonKey.UPDATE);
