@@ -155,7 +155,9 @@ public class UserProfileReadService {
         }
       }
       if (!mentorRoles.isEmpty()){
-        result.put("mentoring",mentoringRoles);
+        Map<String, Object> mentorObj = new HashMap<>();
+        mentorObj.put(JsonKey.ROLE,mentoringRoles);
+        result.put(JsonKey.MENTORING,mentorObj);
       }
     }
 
