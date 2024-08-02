@@ -98,6 +98,7 @@ public class EmailServiceActor extends BaseActor {
       List<String> emails,
       String template,
       RequestContext requestContext) {
+        long startTime = System.currentTimeMillis();
     try {
       SendEmail sendEmail = new SendEmail();
       Velocity.init();
@@ -126,6 +127,7 @@ public class EmailServiceActor extends BaseActor {
           "EmailServiceActor:sendMail: Exception occurred with message = " + e.getMessage(),
           e);
     }
+    logger.info("Email Sent. Time taken (in ms): " + (System.currentTimeMillis() - startTime));
   }
 
   private void resetConnection(RequestContext context) {
