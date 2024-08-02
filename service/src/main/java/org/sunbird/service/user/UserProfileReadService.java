@@ -154,8 +154,8 @@ public class UserProfileReadService {
         if (!list.isEmpty() && list.get(0) instanceof HashMap) {
           for (Object element : list) {
             HashMap<?, ?> hashmap = (HashMap<?, ?>) element;
-            if (hashmap.containsKey("role") && hashmap.get("role") instanceof String) {
-              roles.add((String) hashmap.get("role"));
+            if (hashmap.containsKey(JsonKey.ROLE) && hashmap.get(JsonKey.ROLE) instanceof String) {
+              roles.add((String) hashmap.get(JsonKey.ROLE));
             }
           }
         } else if (!list.isEmpty() && list.get(0) instanceof String) {
@@ -172,7 +172,7 @@ public class UserProfileReadService {
       }
       if (!mentoringRoles.isEmpty()){
         Map<String, Object> mentorObj = new HashMap<>();
-        mentorObj.put(JsonKey.ROLE,mentoringRoles);
+        mentorObj.put(JsonKey.ROLES,mentoringRoles);
         result.put(JsonKey.MENTORING,mentorObj);
       }
     }
