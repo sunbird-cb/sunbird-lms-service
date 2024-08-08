@@ -2,6 +2,7 @@ package org.sunbird.actor.role;
 
 import akka.actor.ActorRef;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
@@ -11,6 +12,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.sunbird.actor.user.UserBaseActor;
 import org.sunbird.exception.ProjectCommonException;
 import org.sunbird.exception.ResponseCode;
+import org.sunbird.kafka.InstructionEventGenerator;
 import org.sunbird.keys.JsonKey;
 import org.sunbird.operations.ActorOperations;
 import org.sunbird.request.Request;
@@ -21,6 +23,7 @@ import org.sunbird.service.user.UserRoleService;
 import org.sunbird.service.user.impl.UserRoleServiceImpl;
 import org.sunbird.telemetry.dto.TelemetryEnvKey;
 import org.sunbird.util.DataCacheHandler;
+import org.sunbird.util.ProjectUtil;
 import org.sunbird.util.PropertiesCache;
 import org.sunbird.util.Util;
 
@@ -112,6 +115,17 @@ public class UserRoleActor extends UserBaseActor {
         (String) requestMap.get(JsonKey.USER_ID),
         userRolesList,
         actorMessage.getRequestContext());
+    if (response.get(JsonKey.RESPONSE).equals(JsonKey.SUCCESS)) {
+      String topic = ProjectUtil.getConfigValue("kafka_mentorship_user_update_topic");
+      try {
+        HashMap<String,String> userDetails = new HashMap<>();
+        userDetails.put(JsonKey.USER_ID,(String) requestMap.get(JsonKey.USER_ID));
+        InstructionEventGenerator.mentorshipUserUpdateEvent("", topic, userDetails);
+        logger.info("kafka_mentorship_user_update_topic event pushed after role change");
+      }catch (Exception e){
+        logger.info("error while generating mentorship event");
+      }
+    }
     generateTelemetryEvent(
         requestMap,
         (String) requestMap.get(JsonKey.USER_ID),
