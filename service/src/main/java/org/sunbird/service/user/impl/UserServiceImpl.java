@@ -216,7 +216,7 @@ public class UserServiceImpl implements UserService {
     Response response;
     Map<String, List<String>> userRoleMap = new HashMap<>();
     if (JsonKey.ID.equalsIgnoreCase(key)) {
-      List<String> ids = new ArrayList<>(2);
+      List<String> ids = new ArrayList<>();
       ids.add(value);
       response = userDao.getUserPropertiesById(ids, fields, context);
     } else {
@@ -230,32 +230,34 @@ public class UserServiceImpl implements UserService {
                 ids.add((String) record.get(JsonKey.USER_ID));
               });
       response = userDao.getUserPropertiesById(ids, fields, context);
-      if (fields.contains(JsonKey.ROLES)) {
-        Response cassandraResponse = cassandraOperation.getRecordsByProperties(
-                JsonKey.SUNBIRD, JsonKey.USER_ROLES,
-                Collections.singletonMap(JsonKey.USERID, ids),
-                Arrays.asList(JsonKey.ROLE, JsonKey.USERID), context);
-
-        ((List<Map<String, Object>>) cassandraResponse.getResult().get(JsonKey.RESPONSE)).stream()
-                .filter(userRole -> userRole.get(JsonKey.ROLE) != null && !((String) userRole.get(JsonKey.ROLE)).isEmpty())
-                .forEach(userRole ->
-                        userRoleMap.computeIfAbsent((String) userRole.get(JsonKey.USER_ID), k -> new ArrayList<>())
-                                .add((String) userRole.get(JsonKey.ROLE))
-                );
-
-        ((List<Map<String, Object>>) response.getResult().get(JsonKey.RESPONSE)).stream()
-                .forEach(user -> {
-                  if (userRoleMap.containsKey((String) user.get(JsonKey.ID))) {
-                    user.put(JsonKey.ROLES, userRoleMap.get((String) user.get(JsonKey.ID)));
-                  }
-                  UserUtility.decryptUserDataFrmES(user);
-                });
-      }
-      return response;
     }
-    for (Map<String, Object> userMap :
-        (List<Map<String, Object>>) response.getResult().get(JsonKey.RESPONSE)) {
-      UserUtility.decryptUserDataFrmES(userMap);
+
+    if (fields.contains(JsonKey.ROLES)) {
+      List<String> ids = ((List<Map<String, Object>>) response.getResult().get(JsonKey.RESPONSE)).stream()
+              .map(user -> (String) user.get(JsonKey.ID))
+              .collect(Collectors.toList());
+      Response cassandraResponse = cassandraOperation.getRecordsByProperties(
+              JsonKey.SUNBIRD, JsonKey.USER_ROLES,
+              Collections.singletonMap(JsonKey.USERID, ids),
+              Arrays.asList(JsonKey.ROLE, JsonKey.USERID), context);
+
+      ((List<Map<String, Object>>) cassandraResponse.getResult().get(JsonKey.RESPONSE)).stream()
+              .filter(userRole -> userRole.get(JsonKey.ROLE) != null && !((String) userRole.get(JsonKey.ROLE)).isEmpty())
+              .forEach(userRole ->
+                      userRoleMap.computeIfAbsent((String) userRole.get(JsonKey.USER_ID), k -> new ArrayList<>())
+                              .add((String) userRole.get(JsonKey.ROLE))
+              );
+
+      ((List<Map<String, Object>>) response.getResult().get(JsonKey.RESPONSE)).stream()
+              .forEach(user -> {
+                if (userRoleMap.containsKey((String) user.get(JsonKey.ID))) {
+                  user.put(JsonKey.ROLES, userRoleMap.get((String) user.get(JsonKey.ID)));
+                }
+                UserUtility.decryptUserDataFrmES(user);
+              });
+    } else {
+      ((List<Map<String, Object>>) response.getResult().get(JsonKey.RESPONSE)).stream()
+              .forEach(UserUtility::decryptUserDataFrmES);
     }
     return response;
   }
